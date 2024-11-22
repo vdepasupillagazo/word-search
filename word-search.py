@@ -45,9 +45,43 @@ def Menu():
 gridsize, timeroption = Menu()
 
 def selectgridsize():
-    # print grid size options and validate user input
-    # only menu options should be accepted
-    return
+    print("CMSC 202 | Group 6 (Word Search)")
+    while True:
+        print("\nSelect Grid Size:")
+        print("1. 3x3")
+        print("2. 4x4")
+        grid_choice = input("Enter Your Choice (1 or 2): ").strip()
+
+        if grid_choice == "1":
+            gridsize = 1
+            print("Selected Grid: 3x3")
+            break
+        elif grid_choice == "2":
+            gridsize = 2
+            print("Selected Grid: 4x4")
+            break
+        else:
+            print("Invalid Choice. Please Select 1 or 2.")
+
+    while True:
+        print("\nSelect Timer Option (1-4):")
+        print("1. 1 Minute")
+        print("2. 3 Minutes")
+        print("3. 5 Minutes")
+        print("4. Untimed")
+        timer_choice = input("Enter Your Choice (1 - 4): ").strip()
+
+        if timer_choice in {"1", "2", "3", "4"}:
+            timeroption = int(timer_choice)
+            
+            timer_d = {1: "1 Minute", 2: "3 Minutes", 3: "5 Minutes", 4: "Untimed"}
+            
+            print(f"Selected Timer: {timer_d[timeroption]}")
+            break
+        else:
+            print("Invalid Choice. Please Select Between 1 - 4.")
+
+    return gridsize, timeroption
 
 def selecttimeroption():
     # print timer options and validate user input
