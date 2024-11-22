@@ -93,3 +93,7 @@ def printWordList():
 def wordSearch():
     # game start!
     return
+
+def NewGame():
+    #reset all settings
+    return
