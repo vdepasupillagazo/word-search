@@ -13,11 +13,11 @@ def menu():
         grid_choice = input("Enter Your Choice (1 or 2): ").strip()
 
         if grid_choice == "1":
-            gridsize = 1
+            gridsize = 3
             print("Selected Grid: 3x3")
             break
         elif grid_choice == "2":
-            gridsize = 2
+            gridsize = 4
             print("Selected Grid: 4x4")
             break
         else:
@@ -45,7 +45,44 @@ def menu():
 
 gridsize, timeroption = menu()
 
+def loadWordLibrary():
+    # read words from file and return as list for use in program
+    return
 
+def create_grid(size):
+    # Initialize an empty list to hold the grid
+    grid = []
+    
+    # Loop to create each row
+    for i in range(size):
+        # Create a row for each grid row
+        row = [" "] * size  # Fill each row with spaces
+        # Add the row to the grid
+        grid.append(row)
+    
+    return grid
+
+def print_grid(grid):
+    # Print according to selected size
+    rows = len(grid)
+    cols = len(grid[0])
+    
+    # Top border
+    print("┌" + "─┬" * (cols - 1) + "─┐")
+    
+    for i, row in enumerate(grid):
+        # Row content
+        print("│" + "│".join(row) + "│")
+        # Row divider (except after the last row)
+        if i < rows - 1:
+            print("├" + "─┼" * (cols - 1) + "─┤")
+    
+    # Bottom border
+    print("└" + "─┴" * (cols - 1) + "─┘")
+
+# Create and print the grid using the selected size
+grid = create_grid(gridsize)
+print_grid(grid)
 
 
 def loadWordLibrary():
