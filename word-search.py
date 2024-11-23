@@ -5,7 +5,7 @@
 #creating menu for the word search game
 def menu():
     print("CMSC 202 | Group 6 (Word Search)")
-#adding options for selecting grid size
+    #adding options for selecting grid size
     while True:
         print("\nSelect Grid Size:")
         print("1. 3x3")
@@ -22,7 +22,7 @@ def menu():
             break
         else:
             print("Invalid Choice. Please Select 1 or 2.")
-#adding the time options (4 selections)
+    #adding the time options (4 selections)
     while True:
         print("\nSelect Timer Option (1-4):")
         print("1. 1 Minute")
