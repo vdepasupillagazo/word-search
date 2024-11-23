@@ -2,9 +2,10 @@
 # Code for our version of the game Word Search (a.k.a. Boggle) #
 # Written by Group 6 for CMSC 202, 1st Sem AY 2024-2025        #
 ################################################################
-
-def Menu():
+#creating menu for the word search game
+def menu():
     print("CMSC 202 | Group 6 (Word Search)")
+    #adding options for selecting grid size
     while True:
         print("\nSelect Grid Size:")
         print("1. 3x3")
@@ -21,7 +22,7 @@ def Menu():
             break
         else:
             print("Invalid Choice. Please Select 1 or 2.")
-
+    #adding the time options (4 selections)
     while True:
         print("\nSelect Timer Option (1-4):")
         print("1. 1 Minute")
@@ -42,17 +43,10 @@ def Menu():
 
     return gridsize, timeroption
 
-gridsize, timeroption = Menu()
+gridsize, timeroption = menu()
 
-def selectgridsize():
-    # print grid size options and validate user input
-    # only menu options should be accepted
-    return
 
-def selecttimeroption():
-    # print timer options and validate user input
-    # only menu options should be accepted
-    return
+
 
 def loadWordLibrary():
     # read words from file and return as list for use in program
