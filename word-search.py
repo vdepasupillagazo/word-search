@@ -3,6 +3,8 @@
 # Written by Group 6 for CMSC 202, 1st Sem AY 2024-2025        #
 ################################################################
 #creating menu for the word search game
+import shutil  #Module for getting terminal dimensions
+
 def menu():
     print("CMSC 202 | Group 6 (Word Search)")
     #adding options for selecting grid size
@@ -13,11 +15,11 @@ def menu():
         grid_choice = input("Enter Your Choice (1 or 2): ").strip()
 
         if grid_choice == "1":
-            gridsize = 1
+            gridsize = 3
             print("Selected Grid: 3x3")
             break
         elif grid_choice == "2":
-            gridsize = 2
+            gridsize = 4
             print("Selected Grid: 4x4")
             break
         else:
@@ -45,8 +47,43 @@ def menu():
 
 gridsize, timeroption = menu()
 
+def create_grid(size):
+    # Initialize an empty list to hold the grid
+    grid = []
 
+    # Loop to create each row
+    for i in range(size):
+        # Create a row for each grid row
+        row = [" "] * size  # Fill each row with spaces
+        # Add the row to the grid
+        grid.append(row)
 
+    return grid
+
+def print_grid(grid):
+    # Print according to selected size
+    rows = len(grid)
+    cols = len(grid[0])
+
+    #Centering the Grid
+    terminal_width, _ = shutil.get_terminal_size() # Get terminal width
+    grid_width = cols * 2 + (cols - 1) + 2  #Each cell is 2 chars, borders, and dividers 
+    left_padding = max(0, (terminal_width - grid_width) // 2) #Calculate left padding for centering, adds pads to center in terminal
+
+    #Top border
+    print(" " * left_padding + "┌" + "─┬" * (cols - 1) + "─┐")
+    for i, row in enumerate(grid):
+        # Row content
+        print(" " * left_padding + "│" + "│".join(row) + "│")
+        # Row divider (except after the last row)
+        if i < rows - 1:
+            print(" " * left_padding + "├" + "─┼" * (cols - 1) + "─┤")
+    # Bottom border
+    print(" " * left_padding + "└" + "─┴" * (cols - 1) + "─┘")
+
+# Test only. Create and print the grid using the selected size
+grid = create_grid(gridsize)
+print_grid(grid)
 
 def loadWordLibrary():
     # read words from file and return as list for use in program
