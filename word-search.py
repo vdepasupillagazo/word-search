@@ -123,6 +123,30 @@ def generate_vowel_list(size):
 
     return vowelList
 
+def generate_consonant_list(consonantCount):
+    # uncommon defined as letter frequency of less than 1%
+    uncommonConsonants = ('j', 'k', 'qu', 'v', 'x', 'z')
+    commonConsonants = ('b', 'c', 'd', 'f', 'g', 'h', 'l', 'm',
+                        'n', 'p', 'r', 's', 't', 'w', 'y')
+
+    # mechanism to include a maximum of 2 uncommon consonants in list
+    uConsonantCount = random.randint(0, 2)
+
+    if (uConsonantCount > 0):
+        uConsonantList = letter_draw(uConsonantCount, uncommonConsonants, False)
+        consonantList = letter_draw(
+            consonantCount-uConsonantCount, commonConsonants)
+
+        # insert into random index in cosonantList
+        for uc in uConsonantList:
+            index = random.randint(0, len(consonantList)+1)
+            consonantList = consonantList[0:index+1] + \
+                (uc,) + consonantList[index+1:len(consonantList)]
+    else:
+        consonantList = letter_draw(consonantCount, commonConsonants)
+
+    return consonantList
+
 def randomizer():
     # generate random list of letters to use as game tiles
     return
