@@ -55,7 +55,7 @@ def create_grid(size):
     # Loop to create each row
     for i in range(size):
         # Create a row for each grid row
-        row = [" "] * size  # Fill each row with spaces
+        row = ["_"] * size  # Fill each row with spaces
         # Add the row to the grid
         grid.append(row)
 
@@ -117,7 +117,7 @@ def generate_vowel_list(size):
     vowels = ('a', 'e', 'i', 'o', 'u')
 
     # sets the min and max number of vowels for each grid size
-    rangeLimit = [3, 5] if size == 3 else [4, 7]
+    rangeLimit = [3, 4] if size == 3 else [4, 7]
     vowelCount = random.randint(rangeLimit[0], rangeLimit[1])
     vowelList = letter_draw(vowelCount, vowels)
 
@@ -147,9 +147,29 @@ def generate_consonant_list(consonantCount):
 
     return consonantList
 
-def randomizer():
-    # generate random list of letters to use as game tiles
-    return
+def randomizer(grid):
+    vowelList = generate_vowel_list(len(grid))
+    consonantList = generate_consonant_list((len(grid)**2)-len(vowelList))
+
+    # increment only when a vowel is inserted
+    vCounter = 0
+    while vCounter < len(vowelList):
+        x = random.randint(0, len(grid)-1)
+        y = random.randint(0, len(grid)-1)
+
+        if (grid[x][y] == "_"):
+            grid[x][y] = vowelList[vCounter]
+            vCounter += 1
+
+    # insert consonants into remaining slots in grid
+    cCounter = 0
+    for x in range(0, len(grid)):
+        for y in range(0, len(grid[x])):
+            if (grid[x][y] == "_"):
+                grid[x][y] = consonantList[cCounter]
+                cCounter += 1
+
+    return grid
 
 def generateWordList():
     # compiles the list of words that the user can find in the game
