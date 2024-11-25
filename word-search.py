@@ -71,15 +71,15 @@ def print_grid(grid):
     left_padding = max(0, (terminal_width - grid_width) // 2) #Calculate left padding for centering, adds pads to center in terminal
 
     #Top border
-    print(" " * left_padding + "┌" + "─┬" * (cols - 1) + "─┐")
+    print(" " * left_padding + "┌" + "───┬" * (cols - 1) + "───┐")
     for i, row in enumerate(grid):
         # Row content
-        print(" " * left_padding + "│" + "│".join(row) + "│")
+        print(" " * left_padding + "│" + "│".join("{:^3}".format(j) for j in row) + "│")
         # Row divider (except after the last row)
         if i < rows - 1:
-            print(" " * left_padding + "├" + "─┼" * (cols - 1) + "─┤")
+            print(" " * left_padding + "├" + "───┼" * (cols - 1) + "───┤")
     # Bottom border
-    print(" " * left_padding + "└" + "─┴" * (cols - 1) + "─┘")
+    print(" " * left_padding + "└" + "───┴" * (cols - 1) + "───┘")
 
 # Test only. Create and print the grid using the selected size
 grid = create_grid(gridsize)
