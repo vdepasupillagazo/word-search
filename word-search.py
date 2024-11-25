@@ -2,9 +2,10 @@
 # Code for our version of the game Word Search (a.k.a. Boggle) #
 # Written by Group 6 for CMSC 202, 1st Sem AY 2024-2025        #
 ################################################################
-#creating menu for the word search game
 import shutil  #Module for getting terminal dimensions
+import random
 
+#creating menu for the word search game
 def menu():
     print("CMSC 202 | Group 6 (Word Search)")
     #adding options for selecting grid size
@@ -96,6 +97,21 @@ def generateGrid():
 def timer():
     # handles logic for timer
     return
+
+# generates random list of letters to use in game
+# allow letter repetition by default
+def letter_draw(count, letterSet, repeat=True):
+    drawnLetters = ()
+    while len(drawnLetters) < count:
+        index = random.randint(0, len(letterSet)-1)
+        if (not repeat and letterSet[index] in drawnLetters):
+            # choose another letter if already exists
+            continue
+        else:
+            # letters are allowed to repeat
+            drawnLetters += (letterSet[index],)
+
+    return drawnLetters
 
 def randomizer():
     # generate random list of letters to use as game tiles
