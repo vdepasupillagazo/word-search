@@ -98,7 +98,8 @@ def letter_draw(count, letterSet, repeat=True):
             # choose another letter if already exists
             continue
         else:
-            # letters are allowed to repeat
+            # if repeat=True letters are allowed to have multiple instances
+            # else only first instance is inserted
             drawnLetters += (letterSet[index],)
 
     return drawnLetters
@@ -129,9 +130,9 @@ def generate_consonant_list(consonantCount):
 
         # insert into random index in cosonantList
         for uc in uConsonantList:
-            index = random.randint(0, len(consonantList)+1)
-            consonantList = consonantList[0:index+1] + \
-                (uc,) + consonantList[index+1:len(consonantList)]
+            index = random.randint(0, len(consonantList))
+            consonantList = consonantList[0:index] + \
+                (uc,) + consonantList[index:len(consonantList)]
     else:
         consonantList = letter_draw(consonantCount, commonConsonants)
 
