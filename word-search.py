@@ -2,9 +2,10 @@
 # Code for our version of the game Word Search (a.k.a. Boggle) #
 # Written by Group 6 for CMSC 202, 1st Sem AY 2024-2025        #
 ################################################################
-#creating menu for the word search game
 import shutil  #Module for getting terminal dimensions
+import random
 
+#creating menu for the word search game
 def menu():
     print("CMSC 202 | Group 6 (Word Search)")
     #adding options for selecting grid size
@@ -45,8 +46,6 @@ def menu():
 
     return gridsize, timeroption
 
-gridsize, timeroption = menu()
-
 def create_grid(size):
     # Initialize an empty list to hold the grid
     grid = []
@@ -54,7 +53,7 @@ def create_grid(size):
     # Loop to create each row
     for i in range(size):
         # Create a row for each grid row
-        row = [" "] * size  # Fill each row with spaces
+        row = ["_"] * size  # Fill each row with spaces
         # Add the row to the grid
         grid.append(row)
 
@@ -81,32 +80,90 @@ def print_grid(grid):
     # Bottom border
     print(" " * left_padding + "└" + "─┴" * (cols - 1) + "─┘")
 
-# Test only. Create and print the grid using the selected size
-grid = create_grid(gridsize)
-print_grid(grid)
-
 def loadWordLibrary():
     # read words from file and return as list for use in program
-    return
-
-def generateGrid():
-    # generate empty tile grid prepopulated with placeholder characters
     return
 
 def timer():
     # handles logic for timer
     return
 
-def randomizer():
-    # generate random list of letters to use as game tiles
-    return
+# generates random list of letters to use in game
+# allow letter repetition by default
+def letter_draw(count, letterSet, repeat=True):
+    drawnLetters = ()
+    while len(drawnLetters) < count:
+        index = random.randint(0, len(letterSet)-1)
+        if (not repeat and letterSet[index] in drawnLetters):
+            # choose another letter if already exists
+            continue
+        else:
+            # if repeat=True letters are allowed to have multiple instances
+            # else only first instance is inserted
+            drawnLetters += (letterSet[index],)
+
+    return drawnLetters
+
+def generate_vowel_list(size):
+    vowels = ('a', 'e', 'i', 'o', 'u')
+
+    # sets the min and max number of vowels for each grid size
+    rangeLimit = [3, 4] if size == 3 else [4, 7]
+    vowelCount = random.randint(rangeLimit[0], rangeLimit[1])
+    vowelList = letter_draw(vowelCount, vowels)
+
+    return vowelList
+
+def generate_consonant_list(consonantCount):
+    # uncommon defined as letter frequency of less than 1%
+    uncommonConsonants = ('j', 'k', 'qu', 'v', 'x', 'z')
+    commonConsonants = ('b', 'c', 'd', 'f', 'g', 'h', 'l', 'm',
+                        'n', 'p', 'r', 's', 't', 'w', 'y')
+
+    # mechanism to include a maximum of 2 uncommon consonants in list
+    uConsonantCount = random.randint(0, 2)
+
+    if (uConsonantCount > 0):
+        uConsonantList = letter_draw(uConsonantCount, uncommonConsonants, False)
+        consonantList = letter_draw(
+            consonantCount-uConsonantCount, commonConsonants)
+
+        # insert into random index in cosonantList
+        for uc in uConsonantList:
+            index = random.randint(0, len(consonantList))
+            consonantList = consonantList[0:index] + \
+                (uc,) + consonantList[index:len(consonantList)]
+    else:
+        consonantList = letter_draw(consonantCount, commonConsonants)
+
+    return consonantList
+
+def randomizer(grid):
+    vowelList = generate_vowel_list(len(grid))
+    consonantList = generate_consonant_list((len(grid)**2)-len(vowelList))
+
+    # increment only when a vowel is inserted
+    vCounter = 0
+    while vCounter < len(vowelList):
+        x = random.randint(0, len(grid)-1)
+        y = random.randint(0, len(grid)-1)
+
+        if (grid[x][y] == "_"):
+            grid[x][y] = vowelList[vCounter]
+            vCounter += 1
+
+    # insert consonants into remaining slots in grid
+    cCounter = 0
+    for x in range(0, len(grid)):
+        for y in range(0, len(grid[x])):
+            if (grid[x][y] == "_"):
+                grid[x][y] = consonantList[cCounter]
+                cCounter += 1
+
+    return grid
 
 def generateWordList():
     # compiles the list of words that the user can find in the game
-    return
-
-def printTiles():
-    # prints the game tiles
     return
 
 def scoreWord():
@@ -121,6 +178,11 @@ def printWordList():
     # prints all possible words to be found at game end
     return
 
-def wordSearch():
+def word_search():
     # game start!
-    return
+    gridsize, timeroption = menu()
+    gridTemplate = create_grid(gridsize)
+    grid = randomizer(gridTemplate)
+    print_grid(grid)
+
+word_search()
