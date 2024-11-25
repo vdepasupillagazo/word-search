@@ -46,8 +46,6 @@ def menu():
 
     return gridsize, timeroption
 
-gridsize, timeroption = menu()
-
 def create_grid(size):
     # Initialize an empty list to hold the grid
     grid = []
@@ -82,16 +80,8 @@ def print_grid(grid):
     # Bottom border
     print(" " * left_padding + "└" + "─┴" * (cols - 1) + "─┘")
 
-# Test only. Create and print the grid using the selected size
-grid = create_grid(gridsize)
-print_grid(grid)
-
 def loadWordLibrary():
     # read words from file and return as list for use in program
-    return
-
-def generateGrid():
-    # generate empty tile grid prepopulated with placeholder characters
     return
 
 def timer():
@@ -175,10 +165,6 @@ def generateWordList():
     # compiles the list of words that the user can find in the game
     return
 
-def printTiles():
-    # prints the game tiles
-    return
-
 def scoreWord():
     # assigns a score to each word found, depending on the length
     return
@@ -191,6 +177,11 @@ def printWordList():
     # prints all possible words to be found at game end
     return
 
-def wordSearch():
+def word_search():
     # game start!
-    return
+    gridsize, timeroption = menu()
+    gridTemplate = create_grid(gridsize)
+    grid = randomizer(gridTemplate)
+    print_grid(grid)
+
+word_search()
