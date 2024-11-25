@@ -113,6 +113,16 @@ def letter_draw(count, letterSet, repeat=True):
 
     return drawnLetters
 
+def generate_vowel_list(size):
+    vowels = ('a', 'e', 'i', 'o', 'u')
+
+    # sets the min and max number of vowels for each grid size
+    rangeLimit = [3, 5] if size == 3 else [4, 7]
+    vowelCount = random.randint(rangeLimit[0], rangeLimit[1])
+    vowelList = letter_draw(vowelCount, vowels)
+
+    return vowelList
+
 def randomizer():
     # generate random list of letters to use as game tiles
     return
