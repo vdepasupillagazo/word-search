@@ -117,8 +117,9 @@ def generate_vowel_list(size):
 def generate_consonant_list(consonantCount):
     # uncommon defined as letter frequency of less than 1%
     uncommonConsonants = ('j', 'k', 'qu', 'v', 'x', 'z')
-    commonConsonants = ('b', 'c', 'd', 'f', 'g', 'h', 'l', 'm',
-                        'n', 'p', 'r', 's', 't', 'w', 'y')
+    # additional entries for letters with frequency higher than 5%
+    commonConsonants = ('b', 'c', 'd', 'f', 'g', 'h', 'l', 'l',
+                        'm', 'n', 'n', 'p', 'r', 'r', 's', 's', 't', 't', 'w', 'y')
 
     # mechanism to include a maximum of 2 uncommon consonants in list
     uConsonantCount = random.randint(0, 2)
