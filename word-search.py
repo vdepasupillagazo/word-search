@@ -4,6 +4,7 @@
 ################################################################
 import shutil  #Module for getting terminal dimensions
 import random
+import re      
 
 #creating menu for the word search game
 def menu():
@@ -80,9 +81,57 @@ def print_grid(grid):
     # Bottom border
     print(" " * left_padding + "└" + "───┴" * (cols - 1) + "───┘")
 
-def loadWordLibrary():
-    # read words from file and return as list for use in program
-    return
+def load_word_library(grid, min=3, filename= "word-list.txt"):
+    # read words from file and return as dict for use in program
+    
+    #transform grid as the letter_list (flatten 2d array - 1d array using comprehension)
+    letter_list_ref = [letter for row in grid for letter in row]
+
+    valid_word_dict = {}
+
+    #max letters in a word
+    max = len(letter_list_ref)
+
+    #filter words in the raw txt file 
+    with open(filename, "r") as file:
+        for line in file:
+            word = line.strip()
+            
+            #filter based on word length
+            if len(word) >= min and len(word) <= max: 
+                letter_list = letter_list_ref.copy()
+
+                #handling if word has 'qu'
+                word_qu = re.findall(r"qu|.", word) if 'qu' in word else word
+
+                #filter based on word structure
+                  #1. letter in letter_list
+                  #2. Letter in letter_list is used only once
+                for letter in word_qu:
+                    if letter in letter_list:
+                        letter_list.remove(letter)
+                        continue
+                    else:
+                        break
+
+                #if the word passed inspections:
+                else:
+
+                    #create a key from the first 3 letter of the word
+                    key = word[:3]
+
+                    #append the word as a value to the existing key
+                    if key in valid_word_dict.keys():
+                        if word in valid_word_dict[key]:
+                            continue
+                        else:
+                            valid_word_dict[key].append(word)
+
+                    #else create a new key/val 
+                    else:
+                        valid_word_dict[key] = [word]
+
+    return valid_word_dict
 
 def timer():
     # handles logic for timer
@@ -185,5 +234,7 @@ def word_search():
     gridTemplate = create_grid(gridsize)
     grid = randomizer(gridTemplate)
     print_grid(grid)
+    valid_words = load_word_library(grid)
+  
 
 word_search()
