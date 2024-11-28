@@ -81,7 +81,7 @@ def print_grid(grid):
     # Bottom border
     print(" " * left_padding + "└" + "───┴" * (cols - 1) + "───┘")
 
-def loadWordLibrary(grid, min=3, filename= "word-list.txt"):
+def load_word_library(grid, min=3, filename= "word-list.txt"):
     # read words from file and return as dict for use in program
     
     #transform grid as the letter_list (flatten 2d array - 1d array using comprehension)
@@ -130,7 +130,6 @@ def loadWordLibrary(grid, min=3, filename= "word-list.txt"):
                     #else create a new key/val 
                     else:
                         valid_word_dict[key] = [word]
-        
 
     return valid_word_dict
 
@@ -235,7 +234,7 @@ def word_search():
     gridTemplate = create_grid(gridsize)
     grid = randomizer(gridTemplate)
     print_grid(grid)
-    valid_words = loadWordLibrary(grid)
+    valid_words = load_word_library(grid)
   
 
 word_search()
