@@ -255,19 +255,18 @@ def new_game():
 
         if timeroption == 4: #if untimed game is selected, ask the player if they want to continue or restart in between guesses
             while True:
-                # Ask the player whether to continue or restart after each guess
-                continue_game = continue_or_restart()
+                continue_game = continue_or_restart()  # Ask the player whether to continue or restart after each guess
                 if not continue_game:
-                    print("Thank you for playing! Goodbye!")
+                    print("Thank you for playing!")
                     break  
                 else:
-                    pass # Continue the game
+                    pass #Continue game
 
         else:
             play_again = input("\nRestart Game? (y/n): ").strip().lower() #if timed game is selected, ask to restart or exit after the game ends
 
             if play_again != 'y':
-                print("Thank you for playing! Goodbye!")
+                print("Thank you for playing!")
                 break 
 
 
