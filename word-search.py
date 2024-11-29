@@ -237,4 +237,41 @@ def word_search():
     valid_words = load_word_library(grid)
   
 
+def continue_or_restart(): #function to enable the player to continue or quit in-between guesses
+    while True:
+        option = input("\nContinue Game? (y/n): ").strip().lower()
+        if option == 'y':
+            return True  #continue playing
+        elif option == 'n':
+            return False  #quit
+        else:
+            print("Invalid input. Please enter 'y' to continue or 'n' to restart.")
+
+def new_game():
+    while True: 
+        gridsize, timeroption = menu() #get grid size and timer option
+        word_search()  # start game
+
+
+        if timeroption == 4: #if untimed game is selected, ask the player if they want to continue or restart in between guesses
+            while True:
+                # Ask the player whether to continue or restart after each guess
+                continue_game = continue_or_restart()
+                if not continue_game:
+                    print("Thank you for playing! Goodbye!")
+                    break  
+                else:
+                    pass # Continue the game
+
+        else:
+            play_again = input("\nRestart Game? (y/n): ").strip().lower() #if timed game is selected, ask to restart or exit after the game ends
+
+            if play_again != 'y':
+                print("Thank you for playing! Goodbye!")
+                break 
+
+
+new_game()   #Call the new_game function to start the game
+  
+
 word_search()
