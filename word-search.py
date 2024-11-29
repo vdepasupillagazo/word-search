@@ -216,9 +216,14 @@ def generateWordList():
     # compiles the list of words that the user can find in the game
     return
 
-def scoreWord():
-    # assigns a score to each word found, depending on the length
-    return
+def scoreWord(word):
+    # assigns a score to each word found
+    length = len(word)
+    if length >= 8:
+        score = 6
+    else:
+        score = len(word) - 2
+    return score
 
 def checkWord():
     # checks if user found a correct word
@@ -235,6 +240,24 @@ def word_search():
     grid = randomizer(gridTemplate)
     print_grid(grid)
     valid_words = load_word_library(grid)
+    
+    currentScore = 0  
+    while True:  
+        wordInput = input('\nEnter word (or type "exit" to quit): ')
+        key = wordInput[:3]  
+        if wordInput.lower() == "exit":
+            print("\nThank you for playing!")
+            break
+        if key in valid_words:
+            if wordInput in valid_words[key]:  
+                score = scoreWord(wordInput)  
+                currentScore += score  
+                print(f"Valid word! Your current score is {currentScore}.")
+            else:
+                print("Invalid word. Try again.")
+        else:
+            print("Invalid word. Try again.")
+    print(f"Your final score is: {currentScore}.")  
   
 
 word_search()
