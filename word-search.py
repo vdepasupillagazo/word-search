@@ -227,13 +227,7 @@ def checkWord():
 def printWordList():
     # prints all possible words to be found at game end
     return
-
-def word_search():
-    # game start!
-    gridsize, timeroption = menu()
-    
   
-
 def continue_or_restart(): #function to enable the player to continue or quit in-between guesses
     while True:
         option = input("\nContinue Game? (y/n): ").strip().lower()
