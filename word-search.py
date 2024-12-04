@@ -231,10 +231,7 @@ def printWordList():
 def word_search():
     # game start!
     gridsize, timeroption = menu()
-    gridTemplate = create_grid(gridsize)
-    grid = randomizer(gridTemplate)
-    print_grid(grid)
-    valid_words = load_word_library(grid)
+    
   
 
 def continue_or_restart(): #function to enable the player to continue or quit in-between guesses
@@ -250,7 +247,11 @@ def continue_or_restart(): #function to enable the player to continue or quit in
 def new_game():
     while True: 
         gridsize, timeroption = menu() #get grid size and timer option
-        word_search()  # start game
+        gridTemplate = create_grid(gridsize)
+        grid = randomizer(gridTemplate)
+        print_grid(grid)
+        valid_words = load_word_library(grid)
+      
 
 
         if timeroption == 4: #if untimed game is selected, ask the player if they want to continue or restart in between guesses
@@ -272,5 +273,3 @@ def new_game():
 
 new_game()   #Call the new_game function to start the game
   
-
-word_search()
