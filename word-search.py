@@ -212,9 +212,17 @@ def randomizer(grid):
 
     return grid
 
-def generateWordList():
-    # compiles the list of words that the user can find in the game
-    return
+# creates a dictionary of all distinct letters in the grid as keys
+# and the list of all their coordinate locations as the value
+def find_starting_coordinates(grid):
+    startingCoordinates = {}
+    for x in range(0, len(grid)):
+        for y in range(0, len(grid[x])):
+            if grid[x][y] in startingCoordinates.keys():
+                startingCoordinates[grid[x][y]].append([x, y])
+            else:
+                startingCoordinates[grid[x][y]] = [[x, y]]
+    return startingCoordinates
 
 def scoreWord(word):
     # assigns a score to each word found
