@@ -224,6 +224,35 @@ def find_starting_coordinates(grid):
                 startingCoordinates[grid[x][y]] = [[x, y]]
     return startingCoordinates
 
+def find_next_tile(nextLetter, xyCoordinates, grid, usedTiles):
+    x = xyCoordinates[0]
+    y = xyCoordinates[1]
+    maxIndex = len(grid)-1
+    matches = []
+
+    # checks each of the surround tiles if it exists,
+    # if it has not yet been used to form the word,
+    # and if is equal to the next letter in the key/word
+    if (x-1 >= 0 and y-1 >= 0 and (not [x-1, y-1] in usedTiles) and nextLetter == grid[x-1][y-1]):
+        matches.append([x-1, y-1])
+    if (x-1 >= 0 and (not [x-1, y] in usedTiles) and nextLetter == grid[x-1][y]):
+        matches.append([x-1, y])
+    if (x-1 >= 0 and y+1 <= maxIndex and (not [x-1, y+1] in usedTiles) and nextLetter == grid[x-1][y+1]):
+        matches.append([x-1, y+1])
+    if (y-1 >= 0 and (not [x, y-1] in usedTiles) and nextLetter == grid[x][y-1]):
+        matches.append([x, y-1])
+    if (y+1 <= maxIndex and (not [x, y+1] in usedTiles) and nextLetter == grid[x][y+1]):
+        matches.append([x, y+1])
+    if (x+1 <= maxIndex and y-1 >= 0 and (not [x+1, y-1] in usedTiles) and nextLetter == grid[x+1][y-1]):
+        matches.append([x+1, y-1])
+    if (x+1 <= maxIndex and (not [x+1, y] in usedTiles) and nextLetter == grid[x+1][y]):
+        matches.append([x+1, y])
+    if (x+1 <= maxIndex and y+1 <= maxIndex and (not [x+1, y+1] in usedTiles) and nextLetter == grid[x+1][y+1]):
+        matches.append([x+1, y+1])
+
+    # all matching coordinates are noted
+    return matches
+
 def scoreWord(word):
     # assigns a score to each word found
     length = len(word)
