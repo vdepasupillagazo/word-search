@@ -233,7 +233,7 @@ def printWordList():
     # prints all possible words to be found at game end
     return
 
-def word_search():
+def new_game(): #merged and renamed word_search() into new_game()
     # game start!
     gridsize, timeroption = menu()
     gridTemplate = create_grid(gridsize)
@@ -257,7 +257,27 @@ def word_search():
                 print("Invalid word. Try again.")
         else:
             print("Invalid word. Try again.")
-    print(f"Your final score is: {currentScore}.")  
-  
 
-word_search()
+        if timeroption == 4:  # If untimed game is selected, ask the player if they want to continue or restart
+            continue_game = continue_or_restart()  # Ask the player whether to continue or restart after each guess
+            if not continue_game:
+                print("Thank you for playing!")
+                break  # Exit the game if the player chooses not to continue
+        else:
+            # For timed games, ask to restart or exit after the game ends
+            play_again = input("\nRestart Game? (y/n): ").strip().lower()
+            if play_again != 'y':
+                print("Thank you for playing!")
+                break  # Exit the game if the player chooses not to continue
+
+def continue_or_restart():  # Function to enable the player to continue or quit in-between guesses
+    while True:
+        option = input("\nContinue Game? (y/n): ").strip().lower()
+        if option == 'y':
+            return True  # Continue playing
+        elif option == 'n':
+            return False  # Quit
+        else:
+            print("Invalid input. Please enter 'y' to continue or 'n' to restart.")
+
+new_game()
