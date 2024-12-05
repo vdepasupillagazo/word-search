@@ -253,6 +253,10 @@ def find_next_tile(nextLetter, xyCoordinates, grid, usedTiles):
     # all matching coordinates are noted
     return matches
 
+# splits word or key into characters, treating 'qu' as one character
+def word_splitter(word):
+    return re.findall(r"qu|.", word) if 'qu' in word else list(word)
+
 def scoreWord(word):
     # assigns a score to each word found
     length = len(word)
