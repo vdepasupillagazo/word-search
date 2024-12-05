@@ -257,6 +257,28 @@ def find_next_tile(nextLetter, xyCoordinates, grid, usedTiles):
 def word_splitter(word):
     return re.findall(r"qu|.", word) if 'qu' in word else list(word)
 
+def word_mapper(charList, coordinates, grid, usedTiles=[]):
+    if (len(charList) > 1):
+        for c in coordinates:
+            # copy to keep a separate list for each branch of the coordinate paths
+            copy = usedTiles.copy()
+            # append current coordinate used for the letter
+            copy.append(c)
+            # find all tile matched for the next letter
+            tileMatches = find_next_tile(charList[1], c, grid, copy)
+
+            if (len(tileMatches) > 0):
+                # repeat mapping for the next character if there are more letters in the key/word
+                return word_mapper(charList[1:], tileMatches, grid, copy)
+            else:
+                # base case for no matching tiles found for next letter
+                return False
+    else:
+        # base case for keys or words mapped successfully
+        # we only need one tile/coordinate match to finish mapping the word
+        usedTiles.append(coordinates[0])
+        return usedTiles
+
 def scoreWord(word):
     # assigns a score to each word found
     length = len(word)
