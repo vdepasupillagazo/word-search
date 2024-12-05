@@ -315,6 +315,8 @@ def generate_word_list(valid_words, grid):
                     if (wordRes):
                         allPossibleWords.append(word)
 
+    return allPossibleWords
+
 def scoreWord(word):
     # assigns a score to each word found
     length = len(word)
@@ -339,21 +341,25 @@ def new_game(): #merged and renamed word_search() into new_game()
     grid = randomizer(gridTemplate)
     print_grid(grid)
     valid_words = load_word_library(grid)
-    
+
+    gridWordList = generate_word_list(valid_words, grid)
+
+    guessedWords = []
     currentScore = 0  
     while True:  
         wordInput = input('\nEnter word (or type "exit" to quit): ')
-        key = wordInput[:3]  
+        
         if wordInput.lower() == "exit":
             print("\nThank you for playing!")
             break
-        if key in valid_words:
-            if wordInput in valid_words[key]:  
-                score = scoreWord(wordInput)  
-                currentScore += score  
-                print(f"Valid word! Your current score is {currentScore}.")
-            else:
-                print("Invalid word. Try again.")
+
+        if wordInput in guessedWords:
+            print("You've already guessed this word. Try another one!")
+        elif wordInput in gridWordList:
+            guessedWords.append(wordInput)
+            score = scoreWord(wordInput)  
+            currentScore += score  
+            print(f"Valid word! Your current score is {currentScore}.")
         else:
             print("Invalid word. Try again.")
 
