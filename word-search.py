@@ -243,9 +243,9 @@ def new_game(): #merged and renamed word_search() into new_game()
     
     currentScore = 0  
     while True:  
-        wordInput = input('\nEnter word (or type "exit" to quit): ')
+        wordInput = input('\nEnter word (or type "0" to quit): ')
         key = wordInput[:3]  
-        if wordInput.lower() == "exit":
+        if wordInput.lower() == "0": 
             print("\nThank you for playing!")
             break
         if key in valid_words:
