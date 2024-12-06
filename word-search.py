@@ -326,10 +326,6 @@ def scoreWord(word):
         score = len(word) - 2
     return score
 
-def checkWord():
-    # checks if user found a correct word
-    return
-
 def printWordList():
     # prints all possible words to be found at game end
     return
@@ -348,6 +344,7 @@ def new_game(): #merged and renamed word_search() into new_game()
     currentScore = 0  
     while True:  
         wordInput = input('\nEnter word (or type "0" to quit): ')
+        
         if wordInput.lower() == "0":
             print("\nThank you for playing!")
             break
