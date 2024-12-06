@@ -81,6 +81,10 @@ def print_grid(grid):
     # Bottom border
     print(" " * left_padding + "└" + "───┴" * (cols - 1) + "───┘")
 
+# splits word or key into characters, treating 'qu' as one character
+def word_splitter(word):
+    return re.findall(r"qu|.", word) if 'qu' in word else word
+
 def load_word_library(grid, min=3, filename= "word-list.txt"):
     # read words from file and return as dict for use in program
     
@@ -102,7 +106,7 @@ def load_word_library(grid, min=3, filename= "word-list.txt"):
                 letter_list = letter_list_ref.copy()
 
                 #handling if word has 'qu'
-                word_qu = re.findall(r"qu|.", word) if 'qu' in word else word
+                word_qu = word_splitter(word)
 
                 #filter based on word structure
                   #1. letter in letter_list
@@ -252,10 +256,6 @@ def find_next_tile(nextLetter, xyCoordinates, grid, usedTiles):
 
     # all matching coordinates are noted
     return matches
-
-# splits word or key into characters, treating 'qu' as one character
-def word_splitter(word):
-    return re.findall(r"qu|.", word) if 'qu' in word else list(word)
 
 def word_mapper(charList, coordinates, grid, usedTiles=[]):
     if (len(charList) > 1):
