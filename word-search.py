@@ -344,7 +344,7 @@ def new_game(): #merged and renamed word_search() into new_game()
 
     gridWordList = generate_word_list(valid_words, grid)
 
-    guessedWords = []
+    foundWords = []
     currentScore = 0  
     while True:  
         wordInput = input('\nEnter word (or type "0" to quit): ')
@@ -352,10 +352,10 @@ def new_game(): #merged and renamed word_search() into new_game()
             print("\nThank you for playing!")
             break
 
-        if wordInput in guessedWords:
-            print("You've already guessed this word. Try another one!")
+        if wordInput in foundWords:
+            print("You've already found this word. Try another one!")
         elif wordInput in gridWordList:
-            guessedWords.append(wordInput)
+            foundWords.append(wordInput)
             score = scoreWord(wordInput)  
             currentScore += score  
             print(f"Valid word! Your current score is {currentScore}.")
