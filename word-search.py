@@ -81,6 +81,10 @@ def print_grid(grid):
     # Bottom border
     print(" " * left_padding + "└" + "───┴" * (cols - 1) + "───┘")
 
+# splits word or key into characters, treating 'qu' as one character
+def word_splitter(word):
+    return re.findall(r"qu|.", word) if 'qu' in word else word
+
 def load_word_library(grid, min=3, filename= "word-list.txt"):
     # read words from file and return as dict for use in program
     
@@ -102,7 +106,7 @@ def load_word_library(grid, min=3, filename= "word-list.txt"):
                 letter_list = letter_list_ref.copy()
 
                 #handling if word has 'qu'
-                word_qu = re.findall(r"qu|.", word) if 'qu' in word else word
+                word_qu = word_splitter(word)
 
                 #filter based on word structure
                   #1. letter in letter_list
@@ -212,9 +216,106 @@ def randomizer(grid):
 
     return grid
 
-def generateWordList():
-    # compiles the list of words that the user can find in the game
-    return
+# creates a dictionary of all distinct letters in the grid as keys
+# and the list of all their coordinate locations as the value
+def find_starting_coordinates(grid):
+    startingCoordinates = {}
+    for x in range(0, len(grid)):
+        for y in range(0, len(grid[x])):
+            if grid[x][y] in startingCoordinates.keys():
+                startingCoordinates[grid[x][y]].append([x, y])
+            else:
+                startingCoordinates[grid[x][y]] = [[x, y]]
+    return startingCoordinates
+
+def find_next_tile(nextLetter, xyCoordinates, grid, usedTiles):
+    x = xyCoordinates[0]
+    y = xyCoordinates[1]
+    maxIndex = len(grid)-1
+    matches = []
+
+    # checks each of the surround tiles if it exists,
+    # if it has not yet been used to form the word,
+    # and if is equal to the next letter in the key/word
+    if (x-1 >= 0 and y-1 >= 0 and (not [x-1, y-1] in usedTiles) and nextLetter == grid[x-1][y-1]):
+        matches.append([x-1, y-1])
+    if (x-1 >= 0 and (not [x-1, y] in usedTiles) and nextLetter == grid[x-1][y]):
+        matches.append([x-1, y])
+    if (x-1 >= 0 and y+1 <= maxIndex and (not [x-1, y+1] in usedTiles) and nextLetter == grid[x-1][y+1]):
+        matches.append([x-1, y+1])
+    if (y-1 >= 0 and (not [x, y-1] in usedTiles) and nextLetter == grid[x][y-1]):
+        matches.append([x, y-1])
+    if (y+1 <= maxIndex and (not [x, y+1] in usedTiles) and nextLetter == grid[x][y+1]):
+        matches.append([x, y+1])
+    if (x+1 <= maxIndex and y-1 >= 0 and (not [x+1, y-1] in usedTiles) and nextLetter == grid[x+1][y-1]):
+        matches.append([x+1, y-1])
+    if (x+1 <= maxIndex and (not [x+1, y] in usedTiles) and nextLetter == grid[x+1][y]):
+        matches.append([x+1, y])
+    if (x+1 <= maxIndex and y+1 <= maxIndex and (not [x+1, y+1] in usedTiles) and nextLetter == grid[x+1][y+1]):
+        matches.append([x+1, y+1])
+
+    # all matching coordinates are noted
+    return matches
+
+def word_mapper(charList, coordinates, grid, usedTiles=[]):
+    if (len(charList) > 1):
+        for c in coordinates:
+            # copy to keep a separate list for each branch of the coordinate paths
+            copy = usedTiles.copy()
+            # append current coordinate used for the letter
+            copy.append(c)
+            # find all tile matched for the next letter
+            tileMatches = find_next_tile(charList[1], c, grid, copy)
+
+            if (len(tileMatches) > 0):
+                # repeat mapping for the next character if there are more letters in the key/word
+                return word_mapper(charList[1:], tileMatches, grid, copy)
+            else:
+                # base case for no matching tiles found for next letter
+                return False
+    else:
+        # base case for keys or words mapped successfully
+        # we only need one tile/coordinate match to finish mapping the word
+        usedTiles.append(coordinates[0])
+        return usedTiles
+    
+# compiles the list of words that the user can find in the game
+def generate_word_list(valid_words, grid):
+    keys = valid_words.keys()
+    # finds all starting coordinates for each letter in the grid
+    startingCoordinates = find_starting_coordinates(grid)
+
+    # where we will append all words found in grid
+    allPossibleWords = []
+    # map through keys first to test if we are able to spell
+    # the first 3 letters successfully using surrounding tiles
+    for key in keys:
+        # split to individual characters, treating 'qu' as a single character
+        keyChars = word_splitter(key)
+        # get strating coordinates of first letter in key
+        keyCoordinates = startingCoordinates[keyChars[0]]
+        # attempt to find all characters in key
+        keyRes = word_mapper(keyChars, keyCoordinates, grid)
+        if (keyRes):
+            # if key is successfully spelled using surrounding tiles, proceed here
+            wordGroup = valid_words[key]
+            # loop through all words under each key/word group
+            for word in wordGroup:
+                if(word == key):
+                    # word has already been spelled successfully
+                    allPossibleWords.append(word)
+                else:
+                    # split to individual characters, treating 'qu' as a single character
+                    wordChars = word_splitter(word)
+                    # take last returned coordinate as starting point
+                    wordCoordinates = keyRes[len(keyRes)-1]
+                    # start mapping from character after last letter in key
+                    # make sure to pass keyRes as usedTiles param for continuity in tracking
+                    wordRes = word_mapper(wordChars[len(keyRes)-1:], [wordCoordinates], grid, keyRes)
+                    if (wordRes):
+                        allPossibleWords.append(word)
+
+    return allPossibleWords
 
 def scoreWord(word):
     # assigns a score to each word found
@@ -224,10 +325,6 @@ def scoreWord(word):
     else:
         score = len(word) - 2
     return score
-
-def checkWord():
-    # checks if user found a correct word
-    return
 
 def printWordList():
     # prints all possible words to be found at game end
@@ -240,21 +337,25 @@ def new_game(): #merged and renamed word_search() into new_game()
     grid = randomizer(gridTemplate)
     print_grid(grid)
     valid_words = load_word_library(grid)
-    
+
+    gridWordList = generate_word_list(valid_words, grid)
+
+    foundWords = []
     currentScore = 0  
     while True:  
         wordInput = input('\nEnter word (or type "0" to quit): ')
-        key = wordInput[:3]  
-        if wordInput.lower() == "0": 
+        
+        if wordInput.lower() == "0":
             print("\nThank you for playing!")
             break
-        if key in valid_words:
-            if wordInput in valid_words[key]:  
-                score = scoreWord(wordInput)  
-                currentScore += score  
-                print(f"Valid word! Your current score is {currentScore}.")
-            else:
-                print("Invalid word. Try again.")
+
+        if wordInput in foundWords:
+            print("You've already found this word. Try another one!")
+        elif wordInput in gridWordList:
+            foundWords.append(wordInput)
+            score = scoreWord(wordInput)  
+            currentScore += score  
+            print(f"Valid word! Your current score is {currentScore}.")
         else:
             print("Invalid word. Try again.")
 
