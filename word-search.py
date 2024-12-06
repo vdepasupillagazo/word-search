@@ -347,9 +347,8 @@ def new_game(): #merged and renamed word_search() into new_game()
     guessedWords = []
     currentScore = 0  
     while True:  
-        wordInput = input('\nEnter word (or type "exit" to quit): ')
-        
-        if wordInput.lower() == "exit":
+        wordInput = input('\nEnter word (or type "0" to quit): ')
+        if wordInput.lower() == "0":
             print("\nThank you for playing!")
             break
 
