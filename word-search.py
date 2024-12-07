@@ -229,8 +229,20 @@ def checkWord():
     # checks if user found a correct word
     return
 
-def printWordList():
+def printWordList(valid_word_dict): 
     # prints all possible words to be found at game end
+    all_words = []
+
+    for words in valid_word_dict.values():
+        for word in words:
+            if len(word) >= 3:  # Check if word length is at least 3
+                all_words.append(word)
+
+    all_words.sort()
+
+    print("\nHere are the possible words:")
+    for word in all_words:
+        print(word)
     return
 
 def new_game(): #merged and renamed word_search() into new_game()
