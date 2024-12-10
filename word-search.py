@@ -231,52 +231,57 @@ def find_starting_coordinates(grid):
 def find_next_tile(nextLetter, xyCoordinates, grid, usedTiles):
     x = xyCoordinates[0]
     y = xyCoordinates[1]
+    # requested to make the code easier to read
+    up = x-1
+    down = x+1
+    left = y-1
+    right = y+1
     maxIndex = len(grid)-1
     matches = []
 
     # checks each of the surround tiles if it exists,
     # if it has not yet been used to form the word,
     # and if is equal to the next letter in the key/word
-    if (x-1 >= 0 and y-1 >= 0 and (not [x-1, y-1] in usedTiles) and nextLetter == grid[x-1][y-1]):
-        matches.append([x-1, y-1])
-    if (x-1 >= 0 and (not [x-1, y] in usedTiles) and nextLetter == grid[x-1][y]):
-        matches.append([x-1, y])
-    if (x-1 >= 0 and y+1 <= maxIndex and (not [x-1, y+1] in usedTiles) and nextLetter == grid[x-1][y+1]):
-        matches.append([x-1, y+1])
-    if (y-1 >= 0 and (not [x, y-1] in usedTiles) and nextLetter == grid[x][y-1]):
-        matches.append([x, y-1])
-    if (y+1 <= maxIndex and (not [x, y+1] in usedTiles) and nextLetter == grid[x][y+1]):
-        matches.append([x, y+1])
-    if (x+1 <= maxIndex and y-1 >= 0 and (not [x+1, y-1] in usedTiles) and nextLetter == grid[x+1][y-1]):
-        matches.append([x+1, y-1])
-    if (x+1 <= maxIndex and (not [x+1, y] in usedTiles) and nextLetter == grid[x+1][y]):
-        matches.append([x+1, y])
-    if (x+1 <= maxIndex and y+1 <= maxIndex and (not [x+1, y+1] in usedTiles) and nextLetter == grid[x+1][y+1]):
-        matches.append([x+1, y+1])
+    if (up >= 0 and left >= 0 and (not [up, left] in usedTiles) and nextLetter == grid[up][left]):
+        matches.append([up, left])
+    if (up >= 0 and (not [up, y] in usedTiles) and nextLetter == grid[up][y]):
+        matches.append([up, y])
+    if (up >= 0 and y+1 <= maxIndex and (not [up, right] in usedTiles) and nextLetter == grid[up][right]):
+        matches.append([up, right])
+    if (left >= 0 and (not [x, left] in usedTiles) and nextLetter == grid[x][left]):
+        matches.append([x, left])
+    if (right <= maxIndex and (not [x, right] in usedTiles) and nextLetter == grid[x][right]):
+        matches.append([x, right])
+    if (down <= maxIndex and left >= 0 and (not [down, left] in usedTiles) and nextLetter == grid[down][left]):
+        matches.append([down, left])
+    if (down <= maxIndex and (not [down, y] in usedTiles) and nextLetter == grid[down][y]):
+        matches.append([down, y])
+    if (down <= maxIndex and right <= maxIndex and (not [down, right] in usedTiles) and nextLetter == grid[down][right]):
+        matches.append([down, right])
 
     # all matching coordinates are noted
     return matches
 
 def word_mapper(charList, coordinates, grid, usedTiles=[]):
-    if (len(charList) > 1):
+    if (len(charList) > 0):
         for c in coordinates:
             # copy to keep a separate list for each branch of the coordinate paths
             copy = usedTiles.copy()
             # append current coordinate used for the letter
             copy.append(c)
             # find all tile matched for the next letter
-            tileMatches = find_next_tile(charList[1], c, grid, copy)
+            tileMatches = find_next_tile(charList[0], c, grid, copy)
 
             if (len(tileMatches) > 0):
                 # repeat mapping for the next character if there are more letters in the key/word
                 return word_mapper(charList[1:], tileMatches, grid, copy)
             else:
-                # base case for no matching tiles found for next letter
-                return False
+                # continue to the next iteration in the coordinates loop
+                continue
     else:
         # base case for keys or words mapped successfully
-        # we only need one tile/coordinate match to finish mapping the word
-        usedTiles.append(coordinates[0])
+        # return all coordinate matches
+        usedTiles.append(coordinates)
         return usedTiles
     
 # compiles the list of words that the user can find in the game
@@ -295,7 +300,7 @@ def generate_word_list(valid_words, grid):
         # get strating coordinates of first letter in key
         keyCoordinates = startingCoordinates[keyChars[0]]
         # attempt to find all characters in key
-        keyRes = word_mapper(keyChars, keyCoordinates, grid)
+        keyRes = word_mapper(keyChars[1:], keyCoordinates, grid)
         if (keyRes):
             # if key is successfully spelled using surrounding tiles, proceed here
             wordGroup = valid_words[key]
@@ -308,10 +313,10 @@ def generate_word_list(valid_words, grid):
                     # split to individual characters, treating 'qu' as a single character
                     wordChars = word_splitter(word)
                     # take last returned coordinate as starting point
-                    wordCoordinates = keyRes[len(keyRes)-1]
+                    wordCoordinates = keyRes[-1]
                     # start mapping from character after last letter in key
                     # make sure to pass keyRes as usedTiles param for continuity in tracking
-                    wordRes = word_mapper(wordChars[len(keyRes)-1:], [wordCoordinates], grid, keyRes)
+                    wordRes = word_mapper(wordChars[len(keyRes):], wordCoordinates, grid, keyRes)
                     if (wordRes):
                         allPossibleWords.append(word)
 
