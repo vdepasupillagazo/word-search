@@ -5,6 +5,7 @@
 import shutil  #Module for getting terminal dimensions
 import random
 import re      
+from collections import defaultdict
 
 #creating menu for the word search game
 def menu():
@@ -229,17 +230,11 @@ def checkWord():
     # checks if user found a correct word
     return
 
-def printWordList(gridWordList, foundWords):
+def print_word_list(gridWordList, foundWords):
     # Prints all possible words to be found at game end
     # Reveals player's answers and possible answers
-    
-    from collections import defaultdict
-
     # Group words by their lengths from gridWordList
     length_groups = defaultdict(list)
-    for word in gridWordList:
-        if len(word) >= 3:  # Only consider words with length 3 or more
-            length_groups[len(word)].append(word)
 
     # Sort the words within each group
     for length in length_groups:
