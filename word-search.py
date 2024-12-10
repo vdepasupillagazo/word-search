@@ -269,7 +269,8 @@ def new_game(): #merged and renamed word_search() into new_game()
             if play_again != 'y':
                 print("Thank you for playing!")
                 break  # Exit the game if the player chooses not to continue
-
+    print(f"Your final score is: {currentScore}.")  
+    
 def continue_or_restart():  # Function to enable the player to continue or quit in-between guesses
     while True:
         option = input("\nContinue Game? (y/n): ").strip().lower()
