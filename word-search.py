@@ -249,13 +249,21 @@ def print_word_list(gridWordList, foundWords):
 
     # Print possible words
     print("\nHere are the possible words:")
-    for length in possible_words:
+    for length in sorted(possible_words.keys()):
+        word_count = len(possible_words[length])
+        print(f"{length}-LETTER WORDS = {word_count} WORD{'S' if word_count > 1 else ''}")
         print(" ".join(possible_words[length]))
 
     # Print answered (found) words
     print("\nHere are the words you have found:")
-    found_words_str = " ".join(foundWords)
-    print(found_words_str)
+    found_word_groups = defaultdict(list)
+    for word in foundWords:
+        found_word_groups[len(word)].append(word)
+
+    for length in sorted(found_word_groups.keys()):
+        word_count = len(found_word_groups[length])
+        print(f"{length}-LETTER WORDS = {word_count} WORD{'S' if word_count > 1 else ''}")
+        print(" ".join(found_word_groups[length]))
 
     return
 
