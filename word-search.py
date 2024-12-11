@@ -5,6 +5,7 @@
 import shutil  #Module for getting terminal dimensions
 import random
 import re      
+from collections import defaultdict
 
 #creating menu for the word search game
 def menu():
@@ -229,8 +230,41 @@ def checkWord():
     # checks if user found a correct word
     return
 
-def printWordList():
-    # prints all possible words to be found at game end
+def print_word_list(gridWordList, foundWords):
+    # Prints all possible words to be found at game end
+    # Reveals player's answers and possible answers
+    # Group words by their lengths from gridWordList
+    length_groups = defaultdict(list)
+
+    # Sort the words within each group
+    for length in length_groups:
+        length_groups[length].sort()
+
+    # Separate the words into possible and found words
+    possible_words = defaultdict(list)
+    for length in length_groups:
+        for word in length_groups[length]:
+            if word not in foundWords:
+                possible_words[length].append(word)
+
+    # Print possible words
+    print("\nHere are the possible words:")
+    for length in sorted(possible_words.keys()):
+        word_count = len(possible_words[length])
+        print(f"{length}-LETTER WORDS = {word_count} WORD{'S' if word_count > 1 else ''}")
+        print(" ".join(possible_words[length]))
+
+    # Print answered (found) words
+    print("\nHere are the words you have found:")
+    found_word_groups = defaultdict(list)
+    for word in foundWords:
+        found_word_groups[len(word)].append(word)
+
+    for length in sorted(found_word_groups.keys()):
+        word_count = len(found_word_groups[length])
+        print(f"{length}-LETTER WORDS = {word_count} WORD{'S' if word_count > 1 else ''}")
+        print(" ".join(found_word_groups[length]))
+
     return
 
 def new_game(): #merged and renamed word_search() into new_game()
