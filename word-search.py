@@ -4,7 +4,8 @@
 ################################################################
 import shutil  #Module for getting terminal dimensions
 import random
-import re      
+import re   
+import time   
 
 #creating menu for the word search game
 def menu():
@@ -136,10 +137,6 @@ def load_word_library(grid, min=3, filename= "word-list.txt"):
                         valid_word_dict[key] = [word]
 
     return valid_word_dict
-
-def timer():
-    # handles logic for timer
-    return
 
 # generates random list of letters to use in game
 # allow letter repetition by default
@@ -335,6 +332,11 @@ def printWordList():
     # prints all possible words to be found at game end
     return
 
+def timer(timeroption):
+    # Map timer options to durations (seconds)
+    timer_durations = {1: 60, 2: 180, 3: 300, 4: None}
+    return timer_durations[timeroption]
+
 def new_game(): #merged and renamed word_search() into new_game()
     # game start!
     gridsize, timeroption = menu()
@@ -346,8 +348,32 @@ def new_game(): #merged and renamed word_search() into new_game()
     gridWordList = generate_word_list(valid_words, grid)
 
     foundWords = []
-    currentScore = 0  
-    while True:  
+    currentScore = 0
+
+    # Timer Integration
+    game_duration  = timer(timeroption)
+    start_time = time.time() if timeroption != 4 else None
+    print("\nGame Start! Find words in the grid.")
+    
+    if timeroption != 4: # Timer active options 1, 2, 3
+        print (f"Game Timer: {game_duration} seconds")
+    else:
+        print("\nGame is untimed!")
+
+    # Game loop
+    while True:
+        # Timer logic
+        if timeroption != 4:
+            elapsed_time = time.time() -  start_time
+            remaining_time = game_duration - int(elapsed_time)
+            if remaining_time <= 0: # Time's up
+                print("Time's up. Game Over!")
+                break
+
+        print(f"\rTime remaining: {remaining_time} seconds", end="", flush=True)
+        time.sleep(1)
+
+        # Game Interaction     
         wordInput = input('\nEnter word (or type "0" to quit): ')
         
         if wordInput.lower() == "0":
@@ -375,8 +401,8 @@ def new_game(): #merged and renamed word_search() into new_game()
             if play_again != 'y':
                 print("Thank you for playing!")
                 break  # Exit the game if the player chooses not to continue
-    print(f"Your final score is: {currentScore}.")  
-    
+    print(f"Your final score is: {currentScore}.")
+
 def continue_or_restart():  # Function to enable the player to continue or quit in-between guesses
     while True:
         option = input("\nContinue Game? (y/n): ").strip().lower()
