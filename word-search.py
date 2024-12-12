@@ -6,6 +6,7 @@ import shutil  #Module for getting terminal dimensions
 import random
 import re      
 import os
+import sys
 
 #creating menu for the word search game
 def menu():
@@ -81,6 +82,7 @@ def print_grid(grid):
             print(" " * left_padding + "├" + "───┼" * (cols - 1) + "───┤")
     # Bottom border
     print(" " * left_padding + "└" + "───┴" * (cols - 1) + "───┘")
+    print("\n") 
 
 # splits word or key into characters, treating 'qu' as one character
 def word_splitter(word):
@@ -353,15 +355,24 @@ def new_game():  #merged and renamed word_search() into new_game()
         while True:  
             wordInput = input('\nEnter word (or type "0" to quit, "1" to restart): ')
 
+            #formatting to clear and print in the same lines
+            sys.stdout.write("\033[F")  # Move cursor up one line           
+            sys.stdout.write("\033[K")  # Clear input line
+            sys.stdout.write("\033[F")  
+            sys.stdout.write("\033[K")  
+            sys.stdout.write("\033[F")  
+            sys.stdout.write("\033[K") 
+            sys.stdout.flush() #immediate refresh
+
             if wordInput == "0":
                 print(f"Your final score is: {currentScore}.\n")
-                print("\nThank you for playing!")
+                print("\nThank you for playing!\n")
                 return 
 
             if wordInput == "1":
                 print(f"Your final score is: {currentScore}.\n")
                 print("\nRestarting the game...")
-                break  #Break from current game loop to restart
+                break  # Break from current game loop to restart
 
             if wordInput in foundWords:
                 print("You've already found this word. Try another one!")
@@ -373,7 +384,7 @@ def new_game():  #merged and renamed word_search() into new_game()
             else:
                 print("Invalid word. Try again.")
 
-def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear') #clear console
-        
+def clear_screen(): #clear consoles
+    os.system('cls' if os.name == 'nt' else 'clear') 
+
 new_game()
