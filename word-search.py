@@ -5,6 +5,7 @@
 import shutil  #Module for getting terminal dimensions
 import random
 import re      
+import os
 
 #creating menu for the word search game
 def menu():
@@ -338,6 +339,7 @@ def printWordList():
 def new_game():  #merged and renamed word_search() into new_game()
     while True:  #main loop for game, handles restarting
         # game start!
+        clear_screen() #start with clean console
         gridsize, timeroption = menu()
         gridTemplate = create_grid(gridsize)
         grid = randomizer(gridTemplate)
@@ -370,5 +372,8 @@ def new_game():  #merged and renamed word_search() into new_game()
                 print(f"Valid word! Your current score is {currentScore}.")
             else:
                 print("Invalid word. Try again.")
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear') #clear console
         
 new_game()
