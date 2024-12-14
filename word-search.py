@@ -410,11 +410,6 @@ def new_game():  #merged and renamed word_search() into new_game()
                 print(f"Valid word! Your current score is {currentScore}.")
             else:
                 print("Invalid word. Try again.")
-        
-        # End of timed game or untimed game continuation
-        play_gain = input('\nRestart Game? (y/n): ').strip().lower()
-        if play_gain != 'y':
-            print("Thank you for playing!")
 
 def clear_screen(): #clear consoles
     os.system('cls' if os.name == 'nt' else 'clear') 
