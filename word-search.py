@@ -342,7 +342,7 @@ def timer(timeroption):
 
 def new_game():  #merged and renamed word_search() into new_game()
     while True:  #main loop for game, handles restarting
-        # game start!
+        # Game start!
         clear_screen() #start with clean console
         gridsize, timeroption = menu()
         gridTemplate = create_grid(gridsize)
@@ -358,6 +358,7 @@ def new_game():  #merged and renamed word_search() into new_game()
         # Timer integaration
         game_duration  = timer(timeroption)
         start_time = time.time() if game_duration else None
+        remaining_time = game_duration if game_duration else None
         print("\nGame Start! Find words in the grid.")
     
         if game_duration: # Timer active options 1, 2, 3
@@ -369,7 +370,7 @@ def new_game():  #merged and renamed word_search() into new_game()
         while True:
             # Timer logic
             if game_duration:
-                elapsed_time = time.time() -  start_time
+                elapsed_time = time.time() - start_time
                 remaining_time = game_duration - int(elapsed_time)
                 if remaining_time <= 0: # Time's up
                     print("Time's up. Game Over!")
@@ -379,28 +380,7 @@ def new_game():  #merged and renamed word_search() into new_game()
             time.sleep(1)
 
             # Game Interaction     
-            wordInput = input('\nEnter word (or type "0" to quit): ')
-        
-            if wordInput.lower() == "0":
-                print(f"\nYour final score is: {currentScore}. \nThank you for playing!")
-                return
-
-            if wordInput in foundWords:
-                print("You've already found this word. Try another one!")
-            elif wordInput in gridWordList:
-                foundWords.append(wordInput)
-                score = scoreWord(wordInput)  
-                currentScore += score  
-                print(f"Valid word! Your current score is {currentScore}.")
-            else:
-                print("Invalid word. Try again.")
-        # End of timed game or untimed game continuation
-        play_gain = input('\nRestart Game? (y/n): ').strip().lower()
-        if play_gain != 'y':
-            print("Thank you for playing!")
-            
-        while True:  
-            wordInput = input('\nEnter word (or type "0" to quit, "1" to restart): ')
+            wordInput = input('\nEnter word (or type "0" to quit, "1" to restart): ').strip()
 
             #formatting to clear and print in the same lines
             sys.stdout.write("\033[F")  # Move cursor up one line           
@@ -430,6 +410,11 @@ def new_game():  #merged and renamed word_search() into new_game()
                 print(f"Valid word! Your current score is {currentScore}.")
             else:
                 print("Invalid word. Try again.")
+        
+        # End of timed game or untimed game continuation
+        play_gain = input('\nRestart Game? (y/n): ').strip().lower()
+        if play_gain != 'y':
+            print("Thank you for playing!")
 
 def clear_screen(): #clear consoles
     os.system('cls' if os.name == 'nt' else 'clear') 
