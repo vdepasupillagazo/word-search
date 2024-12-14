@@ -4,8 +4,10 @@
 ################################################################
 import shutil  #Module for getting terminal dimensions
 import random
-import re   
-import time   
+import re      
+import os
+import sys
+import time
 
 #creating menu for the word search game
 def menu():
@@ -81,6 +83,7 @@ def print_grid(grid):
             print(" " * left_padding + "├" + "───┼" * (cols - 1) + "───┤")
     # Bottom border
     print(" " * left_padding + "└" + "───┴" * (cols - 1) + "───┘")
+    print("\n") 
 
 # splits word or key into characters, treating 'qu' as one character
 def word_splitter(word):
@@ -137,6 +140,10 @@ def load_word_library(grid, min=3, filename= "word-list.txt"):
                         valid_word_dict[key] = [word]
 
     return valid_word_dict
+
+def timer():
+    # handles logic for timer
+    return
 
 # generates random list of letters to use in game
 # allow letter repetition by default
@@ -337,80 +344,97 @@ def timer(timeroption):
     timer_durations = {1: 60, 2: 180, 3: 300, 4: None}
     return timer_durations[timeroption]
 
-def new_game(): #merged and renamed word_search() into new_game()
-    # game start!
-    gridsize, timeroption = menu()
-    gridTemplate = create_grid(gridsize)
-    grid = randomizer(gridTemplate)
-    print_grid(grid)
-    valid_words = load_word_library(grid)
+def new_game():  #merged and renamed word_search() into new_game()
+    while True:  #main loop for game, handles restarting
+        # game start!
+        clear_screen() #start with clean console
+        gridsize, timeroption = menu()
+        gridTemplate = create_grid(gridsize)
+        grid = randomizer(gridTemplate)
+        print_grid(grid)
+        valid_words = load_word_library(grid)
+        gridWordList = generate_word_list(valid_words, grid)
 
-    gridWordList = generate_word_list(valid_words, grid)
+        foundWords = []
+        currentScore = 0
 
-    foundWords = []
-    currentScore = 0
-
-    # Timer Integration
-    game_duration  = timer(timeroption)
-    start_time = time.time() if timeroption != 4 else None
-    print("\nGame Start! Find words in the grid.")
+        # Timer integaration
+        game_duration  = timer(timeroption)
+        start_time = time.time() if game_duration else None
+        print("\nGame Start! Find words in the grid.")
     
-    if timeroption != 4: # Timer active options 1, 2, 3
-        print (f"Game Timer: {game_duration} seconds")
-    else:
-        print("\nGame is untimed!")
+        if game_duration: # Timer active options 1, 2, 3
+            print (f"Game Timer: {game_duration} seconds")
+        else:
+            print("\nGame is untimed!")
 
-    # Game loop
-    while True:
-        # Timer logic
-        if timeroption != 4:
-            elapsed_time = time.time() -  start_time
-            remaining_time = game_duration - int(elapsed_time)
-            if remaining_time <= 0: # Time's up
-                print("Time's up. Game Over!")
-                break
+        # Game loop
+        while True:
+            # Timer logic
+            if game_duration:
+                elapsed_time = time.time() -  start_time
+                remaining_time = game_duration - int(elapsed_time)
+                if remaining_time <= 0: # Time's up
+                    print("Time's up. Game Over!")
+                    break
 
-        print(f"\rTime remaining: {remaining_time} seconds", end="", flush=True)
-        time.sleep(1)
+            print(f"\rTime remaining: {remaining_time} seconds", end="", flush=True)
+            time.sleep(1)
 
-        # Game Interaction     
-        wordInput = input('\nEnter word (or type "0" to quit): ')
+            # Game Interaction     
+            wordInput = input('\nEnter word (or type "0" to quit): ')
         
-        if wordInput.lower() == "0":
-            print("\nThank you for playing!")
-            break
+            if wordInput.lower() == "0":
+                print(f"\nYour final score is: {currentScore}. \nThank you for playing!")
+                return
 
-        if wordInput in foundWords:
-            print("You've already found this word. Try another one!")
-        elif wordInput in gridWordList:
-            foundWords.append(wordInput)
-            score = scoreWord(wordInput)  
-            currentScore += score  
-            print(f"Valid word! Your current score is {currentScore}.")
-        else:
-            print("Invalid word. Try again.")
+            if wordInput in foundWords:
+                print("You've already found this word. Try another one!")
+            elif wordInput in gridWordList:
+                foundWords.append(wordInput)
+                score = scoreWord(wordInput)  
+                currentScore += score  
+                print(f"Valid word! Your current score is {currentScore}.")
+            else:
+                print("Invalid word. Try again.")
+        # End of timed game or untimed game continuation
+        play_gain = input('\nRestart Game? (y/n): ').strip().lower()
+        if play_gain != 'y':
+            print("Thank you for playing!")
 
-        if timeroption == 4:  # If untimed game is selected, ask the player if they want to continue or restart
-            continue_game = continue_or_restart()  # Ask the player whether to continue or restart after each guess
-            if not continue_game:
-                print("Thank you for playing!")
-                break  # Exit the game if the player chooses not to continue
-        else:
-            # For timed games, ask to restart or exit after the game ends
-            play_again = input("\nRestart Game? (y/n): ").strip().lower()
-            if play_again != 'y':
-                print("Thank you for playing!")
-                break  # Exit the game if the player chooses not to continue
-    print(f"Your final score is: {currentScore}.")
+        while True:  
+            wordInput = input('\nEnter word (or type "0" to quit, "1" to restart): ')
 
-def continue_or_restart():  # Function to enable the player to continue or quit in-between guesses
-    while True:
-        option = input("\nContinue Game? (y/n): ").strip().lower()
-        if option == 'y':
-            return True  # Continue playing
-        elif option == 'n':
-            return False  # Quit
-        else:
-            print("Invalid input. Please enter 'y' to continue or 'n' to restart.")
+            #formatting to clear and print in the same lines
+            sys.stdout.write("\033[F")  # Move cursor up one line           
+            sys.stdout.write("\033[K")  # Clear input line
+            sys.stdout.write("\033[F")  
+            sys.stdout.write("\033[K")  
+            sys.stdout.write("\033[F")  
+            sys.stdout.write("\033[K") 
+            sys.stdout.flush() #immediate refresh
+
+            if wordInput == "0":
+                print(f"Your final score is: {currentScore}.\n")
+                print("\nThank you for playing!\n")
+                return 
+
+            if wordInput == "1":
+                print(f"Your final score is: {currentScore}.\n")
+                print("\nRestarting the game...")
+                break  # Break from current game loop to restart
+
+            if wordInput in foundWords:
+                print("You've already found this word. Try another one!")
+            elif wordInput in gridWordList:
+                foundWords.append(wordInput)
+                score = scoreWord(wordInput)
+                currentScore += score
+                print(f"Valid word! Your current score is {currentScore}.")
+            else:
+                print("Invalid word. Try again.")
+
+def clear_screen(): #clear consoles
+    os.system('cls' if os.name == 'nt' else 'clear') 
 
 new_game()
