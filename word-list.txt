@@ -20390,6 +20390,7 @@ coin
 coinage
 coinable
 coiner
+coins
 cointise
 coir
 coistrel
