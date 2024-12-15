@@ -231,35 +231,28 @@ def find_starting_coordinates(grid):
     return startingCoordinates
 
 def find_next_tile(nextLetter, xyCoordinates, grid, usedTiles):
-    x = xyCoordinates[0]
-    y = xyCoordinates[1]
-    # requested to make the code easier to read
-    up = x-1
-    down = x+1
-    left = y-1
-    right = y+1
+    #current letter(x0, y0)
+    x0 = xyCoordinates[0]
+    y0 = xyCoordinates[1]
+
+    #location of in the grid, surrounds current letter(x0,y0)
+    up = x0-1
+    down = x0+1
+    left = y0-1
+    right = y0+1
+    #3x3 grid
+    location = [(up, left), (up, y0), (up, right), (x0, right), (down, right), (down, y0), (down, left), (x0, left)]
+
+    #upper limit
     maxIndex = len(grid)-1
     matches = []
-
+    
     # checks each of the surround tiles if it exists,
     # if it has not yet been used to form the word,
-    # and if is equal to the next letter in the key/word
-    if (up >= 0 and left >= 0 and (not [up, left] in usedTiles) and nextLetter == grid[up][left]):
-        matches.append([up, left])
-    if (up >= 0 and (not [up, y] in usedTiles) and nextLetter == grid[up][y]):
-        matches.append([up, y])
-    if (up >= 0 and y+1 <= maxIndex and (not [up, right] in usedTiles) and nextLetter == grid[up][right]):
-        matches.append([up, right])
-    if (left >= 0 and (not [x, left] in usedTiles) and nextLetter == grid[x][left]):
-        matches.append([x, left])
-    if (right <= maxIndex and (not [x, right] in usedTiles) and nextLetter == grid[x][right]):
-        matches.append([x, right])
-    if (down <= maxIndex and left >= 0 and (not [down, left] in usedTiles) and nextLetter == grid[down][left]):
-        matches.append([down, left])
-    if (down <= maxIndex and (not [down, y] in usedTiles) and nextLetter == grid[down][y]):
-        matches.append([down, y])
-    if (down <= maxIndex and right <= maxIndex and (not [down, right] in usedTiles) and nextLetter == grid[down][right]):
-        matches.append([down, right])
+    # and if is equal to the next letter in the key/word (reference-based look-up)
+    for x, y in location:
+        if ((x >= 0 and x <= maxIndex) and (y >= 0 and y <= maxIndex) and (not [x, y] in usedTiles) and nextLetter == grid[x][y]):
+            matches.append([x, y])
 
     # all matching coordinates are noted
     return matches
