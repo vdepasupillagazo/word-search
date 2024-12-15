@@ -277,7 +277,13 @@ def word_mapper(charList, coordinates, grid, usedTiles=[]):
 
             if (len(tileMatches) > 0):
                 # repeat mapping for the next character if there are more letters in the key/word
-                return word_mapper(charList[1:], tileMatches, grid, copy)
+                res = word_mapper(charList[1:], tileMatches, grid, copy)
+                if (res):
+                    # the word is found in this branch
+                    return res
+                else:
+                    # continue to the next iteration in the coordinates loop
+                    continue
             else:
                 # continue to the next iteration in the coordinates loop
                 continue
@@ -302,28 +308,38 @@ def generate_word_list(valid_words, grid):
         keyChars = word_splitter(key)
         # get strating coordinates of first letter in key
         keyCoordinates = startingCoordinates[keyChars[0]]
-        # attempt to find all characters in key
-        keyRes = word_mapper(keyChars[1:], keyCoordinates, grid)
-        if (keyRes):
-            # if key is successfully spelled using surrounding tiles, proceed here
-            wordGroup = valid_words[key]
-            # loop through all words under each key/word group
-            for word in wordGroup:
-                if(word == key):
-                    # word has already been spelled successfully
-                    allPossibleWords.append(word)
-                else:
-                    # split to individual characters, treating 'qu' as a single character
-                    wordChars = word_splitter(word)
-                    # take last returned coordinate as starting point
-                    wordCoordinates = keyRes[-1]
-                    # start mapping from character after last letter in key
-                    # make sure to pass keyRes as usedTiles param for continuity in tracking
-                    wordRes = word_mapper(wordChars[len(keyRes):], wordCoordinates, grid, keyRes)
-                    if (wordRes):
+        # loop through all paths of starting coordinates here to capture all branches that spell out the key
+        # this will cause repeating words in allPossibleWords, but we will clean this before returning the list
+        for firstCoor in keyCoordinates:
+            # attempt to find all characters in key
+            keyRes = word_mapper(keyChars[1:], [firstCoor], grid)
+            if (keyRes):
+                # if key is successfully spelled using surrounding tiles, proceed here
+                wordGroup = valid_words[key]
+                # loop through all words under each key/word group
+                for word in wordGroup:
+                    if (word == key):
+                        # word has already been spelled successfully
                         allPossibleWords.append(word)
+                    else:
+                        # split to individual characters, treating 'qu' as a single character
+                        wordChars = word_splitter(word)
+                        # take last returned coordinate as starting point
+                        wordCoordinates = keyRes[-1]
+                        # start mapping from character after last letter in key
+                        # make sure to pass keyRes as usedTiles param for continuity in tracking
+                        wordRes = word_mapper(wordChars[len(keyRes):], wordCoordinates, grid, keyRes)
+                        if (wordRes):
+                            allPossibleWords.append(word)
 
-    return allPossibleWords
+    # way to get all distinct values from the list
+    # the set() func converts data into a set data type, taking only unique value from the data
+    # set is like a dict, but only made up of "keys" (no values)
+    # convert set to list to return to original data type 
+    uniqueWords = list(set(allPossibleWords))
+    # sort for faster tracking
+    uniqueWords.sort()
+    return uniqueWords
 
 def scoreWord(word):
     # assigns a score to each word found
