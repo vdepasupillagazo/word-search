@@ -7,6 +7,7 @@ import random
 import re      
 import os
 import sys
+from collections import defaultdict
 
 #creating menu for the word search game
 def menu():
@@ -334,8 +335,29 @@ def scoreWord(word):
         score = len(word) - 2
     return score
 
-def printWordList():
-    # prints all possible words to be found at game end
+def print_word_list(gridWordList, foundWords):
+    # Prints all possible words to be found at game end
+    # Reveals player's answers and possible answers
+    # Group words by their lengths from gridWordList
+    word_groups = defaultdict(list)
+
+    # Sort the words within each group
+    for word in gridWordList:
+        word_groups[len(word)].append(word)
+
+    # Found words first, then not found, then list alphabetically
+    for length in word_groups:
+        word_groups[length].sort()
+
+    # Print possible words
+    print("\nHere are all the words:")
+    for length in sorted(word_groups.keys()):
+        word_count = len(word_groups[length])
+        print(f"\n{length}-LETTER WORDS = {word_count} WORD{'S' if word_count > 1 else ''}")
+        for word in word_groups[length]:
+            status = "FOUND" if word in foundWords else "NOT FOUND"
+            print(f"{word} ({status})")
+
     return
 
 def new_game():  #merged and renamed word_search() into new_game()
