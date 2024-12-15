@@ -354,6 +354,21 @@ def printWordList():
     # prints all possible words to be found at game end
     return
 
+def reshuffle_grid(grid):
+    #this reshuffles the letters in the grid
+
+    # take all the letters from the grid 
+    letters = [letter for row in grid for letter in row]
+
+    # shuffle the letters
+    random.shuffle(letters)
+
+    #return the shuffled letters into the grid
+    size = len(grid)
+    reshuffled_grid = [letters[i * size:(i + 1) * size] for i in range(size)]
+
+    return reshuffled_grid
+
 def new_game():  #merged and renamed word_search() into new_game()
     while True:  #main loop for game, handles restarting
         # game start!
@@ -389,6 +404,14 @@ def new_game():  #merged and renamed word_search() into new_game()
                 print(f"Your final score is: {currentScore}.\n")
                 print("\nRestarting the game...")
                 break  # Break from current game loop to restart
+
+            if wordInput == "2":  # Trigger reshuffle
+                print("\nReshuffling the grid...")
+                grid = reshuffle_grid(grid)  
+                print_grid(grid)  # Print the reshuffled grid
+                gridWordList = generate_word_list(valid_words, grid)  # Re-generate word list for reshuffled grid
+                print("UPDATED WORD LIST: ", gridWordList)  
+                continue  # Continue  to prompt the user for the next word input (score remains unchanged)
 
             if wordInput in foundWords:
                 print("You've already found this word. Try another one!")
