@@ -345,7 +345,7 @@ def print_word_list(gridWordList, foundWords):
     for word in gridWordList:
         word_groups[len(word)].append(word)
 
-    # Found words first, then not found, then list alphabetically
+    # Group words by length
     for length in word_groups:
         word_groups[length].sort()
 
@@ -354,7 +354,13 @@ def print_word_list(gridWordList, foundWords):
     for length in sorted(word_groups.keys()):
         word_count = len(word_groups[length])
         print(f"\n{length}-LETTER WORDS = {word_count} WORD{'S' if word_count > 1 else ''}")
-        for word in word_groups[length]:
+
+        # Separate found and not found words, and sort them
+        found = sorted([word for word in word_groups[length] if word in foundWords])
+        not_found = sorted([word for word in word_groups[length] if word not in foundWords])
+
+         # Display found words first, then not found words
+        for word in found + not_found:
             status = "FOUND" if word in foundWords else "NOT FOUND"
             print(f"{word} ({status})")
 
