@@ -354,7 +354,7 @@ def new_game():  #merged and renamed word_search() into new_game()
         gridTemplate = create_grid(gridsize)
         grid = randomizer(gridTemplate)
         print_grid(grid)
-        valid_words = load_word_library(grid)
+        valid_words = load_word_library(grid, filename="words_alpha.txt")
 
         gridWordList = generate_word_list(valid_words, grid)
 
