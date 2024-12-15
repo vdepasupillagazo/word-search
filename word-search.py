@@ -5,7 +5,6 @@
 import shutil  #Module for getting terminal dimensions
 import random
 import re      
-import os
 import sys
 
 #creating menu for the word search game
@@ -400,7 +399,8 @@ def new_game():  #merged and renamed word_search() into new_game()
             else:
                 print("Invalid word. Try again.")
 
-def clear_screen(): #clear consoles
-    os.system('cls' if os.name == 'nt' else 'clear') 
+def clear_screen(): #clear console
+    print("\033[3J\033[H\033[J", end="")
+    sys.stdout.flush()
 
 new_game()
