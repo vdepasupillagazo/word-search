@@ -7,7 +7,7 @@ import random
 import re      
 import sys
 import time
-
+import os
 import ast
 from collections import defaultdict
 
@@ -488,10 +488,33 @@ def print_word_list(gridWordList, foundWords):
 
     return
 
+def reshuffle_grid(grid):
+    #this reshuffles the letters in the grid
+
+    # take all the letters from the grid 
+    letters = [letter for row in grid for letter in row]
+
+    # shuffle the letters
+    random.shuffle(letters)
+
+    #return the shuffled letters into the grid
+    size = len(grid)
+    reshuffled_grid = [letters[i * size:(i + 1) * size] for i in range(size)]
+
+    return reshuffled_grid
+
 def timer(timeroption):
     # Map timer options to durations (seconds)
     timer_durations = {1: 60, 2: 180, 3: 300, 4: None}
     return timer_durations[timeroption]
+
+def print_grid_sequence(grid, game_duration):
+    print_grid(grid)
+    print("\nGame Start! Find words in the grid.")
+    if game_duration: # Timer active options 1, 2, 3
+        print (f"Game Timer: {game_duration} seconds")
+    else:
+        print("\nGame is untimed!")
 
 def new_game():  #merged and renamed word_search() into new_game()
     while True:  #main loop for game, handles restarting
@@ -500,11 +523,9 @@ def new_game():  #merged and renamed word_search() into new_game()
         gridsize, timeroption = menu()
         gridTemplate = create_grid(gridsize)
         grid = randomizer(gridTemplate)
-        print_grid(grid)
         valid_words = load_word_library(grid)
-
         gridWordList = generate_word_list(valid_words, grid)
-
+        
         foundWords = []
         currentScore = 0
 
@@ -512,12 +533,8 @@ def new_game():  #merged and renamed word_search() into new_game()
         game_duration  = timer(timeroption)
         start_time = time.time() if game_duration else None
         remaining_time = game_duration if game_duration else None
-        print("\nGame Start! Find words in the grid.")
-    
-        if game_duration: # Timer active options 1, 2, 3
-            print (f"Game Timer: {game_duration} seconds")
-        else:
-            print("\nGame is untimed!")
+
+        print_grid_sequence(grid, game_duration)
 
         # Game loop
         while True:
@@ -534,15 +551,9 @@ def new_game():  #merged and renamed word_search() into new_game()
                 time.sleep(1) # Keep the loop running without printing repeatedly
 
             # Game Interaction     
-            wordInput = input('\nEnter word (or type "0" to quit, "1" to restart): ').strip()
+            wordInput = input('\nEnter word (or type "0" to quit, "1" to restart, "2" to reshuffle): ').strip()
 
-            #formatting to clear and print in the same lines
-            sys.stdout.write("\033[F")  # Move cursor up one line           
-            sys.stdout.write("\033[K")  # Clear input line
-            sys.stdout.write("\033[F")  
-            sys.stdout.write("\033[K")  
-            sys.stdout.write("\033[F")  
-            sys.stdout.write("\033[K") 
+            clear_lines(3)
             sys.stdout.flush() #immediate refresh
 
             if wordInput == "0":
@@ -554,6 +565,17 @@ def new_game():  #merged and renamed word_search() into new_game()
                 print(f"Your final score is: {currentScore}.\n")
                 print("\nRestarting the game...")
                 break  # Break from current game loop to restart
+
+            if wordInput == "2":  # Trigger reshuffle
+                grid = reshuffle_grid(grid)
+                clear_lines(14)
+                print("\nReshuffling the grid...")
+                # allows user to read reshuffle message before reprint
+                time.sleep(1)
+                clear_lines(2)
+                print_grid_sequence(grid, game_duration) # Print the reshuffled grid
+                gridWordList = generate_word_list(valid_words, grid)  # Re-generate word list for reshuffled grid
+                continue  # Continue  to prompt the user for the next word input (score remains unchanged)
 
             if wordInput in foundWords:
                 print("You've already found this word. Try another one!")
@@ -567,6 +589,13 @@ def new_game():  #merged and renamed word_search() into new_game()
 
 def clear_screen(): #clear console
     print("\033[3J\033[H\033[J", end="")
+    sys.stdout.flush()
+
+def clear_lines(lineCount):
+    #formatting to clear and print in the same lines
+    for _ in range(0, lineCount):
+        sys.stdout.write("\033[F")  # Move cursor up one line           
+        sys.stdout.write("\033[K")  # Clear input line
     sys.stdout.flush()
 
 exist()
