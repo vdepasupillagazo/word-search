@@ -547,7 +547,8 @@ def new_game():  #merged and renamed word_search() into new_game()
                 elapsed_time = time.time() - start_time
                 remaining_time = game_duration - int(elapsed_time)
                 if remaining_time <= 0: # Time's up
-                    print("Time's up. Game Over!")
+                    print("\nTime's up. Game Over!")
+                    time.sleep(1) # allows user to read game over message before restarting
                     break
 
                 print(f"\rTime remaining: {remaining_time} seconds", end="", flush=True)
