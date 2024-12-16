@@ -564,7 +564,7 @@ def clear_screen(): #clear console
 
 def clear_lines(lineCount):
     #formatting to clear and print in the same lines
-    for l in range(0, lineCount):
+    for _ in range(0, lineCount):
         sys.stdout.write("\033[F")  # Move cursor up one line           
         sys.stdout.write("\033[K")  # Clear input line
     sys.stdout.flush()
