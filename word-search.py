@@ -570,7 +570,13 @@ def new_game():  #merged and renamed word_search() into new_game()
                 break  # Break from current game loop to restart
             elif wordInput == "2":  # Trigger reshuffle
                 grid = reshuffle_grid(grid)
-                clear_lines(14 if gridsize == "4" else 12)
+                lineCount = 0
+                if (game_duration):
+                    lineCount = 13 if gridsize == 4 else 11
+                else:
+                    lineCount = 14 if gridsize == 4 else 12
+
+                clear_lines(lineCount)
                 print("\nReshuffling the grid...")
                 # allows user to read reshuffle message before reprint
                 time.sleep(1)
