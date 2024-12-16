@@ -6,6 +6,7 @@ import shutil  #Module for getting terminal dimensions
 import random
 import re      
 import sys
+import time
 
 import ast
 
@@ -248,10 +249,6 @@ def load_word_library(grid, min=3, filename= "word-list.txt"):
 
     return valid_word_dict
 
-def timer():
-    # handles logic for timer
-    return
-
 # generates random list of letters to use in game
 # allow letter repetition by default
 def letter_draw(count, letterSet, repeat=True):
@@ -462,9 +459,14 @@ def printWordList():
     # prints all possible words to be found at game end
     return
 
+def timer(timeroption):
+    # Map timer options to durations (seconds)
+    timer_durations = {1: 60, 2: 180, 3: 300, 4: None}
+    return timer_durations[timeroption]
+
 def new_game():  #merged and renamed word_search() into new_game()
     while True:  #main loop for game, handles restarting
-        # game start!
+        # Game start!
         clear_screen() #start with clean console
         gridsize, timeroption = menu()
         gridTemplate = create_grid(gridsize)
@@ -475,9 +477,35 @@ def new_game():  #merged and renamed word_search() into new_game()
         gridWordList = generate_word_list(valid_words, grid)
 
         foundWords = []
-        currentScore = 0  
-        while True:  
-            wordInput = input('\nEnter word (or type "0" to quit, "1" to restart): ')
+        currentScore = 0
+
+        # Timer integaration
+        game_duration  = timer(timeroption)
+        start_time = time.time() if game_duration else None
+        remaining_time = game_duration if game_duration else None
+        print("\nGame Start! Find words in the grid.")
+    
+        if game_duration: # Timer active options 1, 2, 3
+            print (f"Game Timer: {game_duration} seconds")
+        else:
+            print("\nGame is untimed!")
+
+        # Game loop
+        while True:
+            # Timer logic
+            if game_duration:
+                elapsed_time = time.time() - start_time
+                remaining_time = game_duration - int(elapsed_time)
+                if remaining_time <= 0: # Time's up
+                    print("Time's up. Game Over!")
+                    break
+
+                print(f"\rTime remaining: {remaining_time} seconds", end="", flush=True)
+            else: # For untimed game
+                time.sleep(1) # Keep the loop running without printing repeatedly
+
+            # Game Interaction     
+            wordInput = input('\nEnter word (or type "0" to quit, "1" to restart): ').strip()
 
             #formatting to clear and print in the same lines
             sys.stdout.write("\033[F")  # Move cursor up one line           
