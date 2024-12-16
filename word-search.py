@@ -7,15 +7,16 @@ import random
 import re      
 import sys
 import time
-
+import os
 import ast
+from datetime import datetime
 
-#Welcome message
+# Welcome message
 def welcomeMessage(message):
-    width = 80 
+    width = 80
     print("\n" + message.center(width) + "\n")
 
-#Short game description
+# Short game description
 def gameDesc():
     message = '''
     Find the hidden words in the grid. 
@@ -23,99 +24,54 @@ def gameDesc():
     Choose your desired grid size, and enjoy the relaxing untimed mode 
     or challenge yourself with the clock. 
     Ready? Let’s begin!'''
-    width = 80 
+    width = 80
     centered_gameDesc = "\n".join(line.strip().center(width) for line in message.strip().splitlines())
     return centered_gameDesc
+
+def get_player_name():
+    # Ask the player for their name
+    player_name = input("Enter your name: ").strip()
+    return player_name
+
+def record_score(player_name, score):
+    # Get the current date and time
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-#Check if there is scores.txt already. 
-    # If no, scores.txt is created upon end of game storing scoresData {'playerName': {'Date Played': [], 'Score': [], 'Time Taken': []}} 
-    # If there is an existing file, new info from the scoresData should be appended (if existing)/added (new player) to the dictionary stored in scores.txt
-def exist(fileScores="scores.txt"):
-    scoresData = {}
+    # Open the scores file in append mode to add a new entry
+    with open("scores.txt", "a") as file:
+        # Write the player's name, score, and timestamp to the file
+        file.write(f"{player_name} | {timestamp} | {score}\n")
+    print(f"Score for {player_name} recorded!")
+
+def get_top_scorers():
+    top_scorers = []
+    with open("scores.txt", "r") as f:
+        for line in f:
+            parts = line.strip().split(" | ")
+            if len(parts) == 3:
+                name, timestamp, score = parts
+                try:
+                    score = int(score)  # Ensure score is an integer for sorting
+                except ValueError:
+                    continue  # Skip if the score isn't a valid integer
+                top_scorers.append((name, timestamp, score))
     
-    if os.path.exists(fileScores):
-        with open(fileScores, "r") as file:
-            content = file.read().strip()  
-        try:
-            scoresData = ast.literal_eval(content)
-        except (SyntaxError, ValueError):
-            print("Error: Invalid format in scores.txt. Starting with an empty scores data.")
-            scoresData = {}
+    # Sort the list by score in descending order
+    top_scorers.sort(key=lambda x: x[2], reverse=True)
 
-        welcomeMessage("Welcome back to Word Search!")
-        print(gameDesc())
-        selectPlayer(scoresData)
+    # Return only the top 10 players (or fewer if there aren't 10)
+    return top_scorers[:10]
 
-    else:
-        welcomeMessage("Welcome to Word Search!")
-        print(gameDesc())
-        scoresData = newPlayer(scoresData)
+def display_top_scorers():
+    top_scorers = get_top_scorers()
     
-    return scoresData
-
-#For playerName selection and add new player if scores.txt already exists
-def selectPlayer(scoresData):
-    print("\nSelect Player Name:")
-    for idx, playerName in enumerate(scoresData.keys(), 1):
-        print(f"{idx}. {playerName}")
-    while True:
-        try:
-            choice = int(input("\nEnter your choice (type '0' for new player): ").strip())
-            if choice == 0:
-                newPlayer(scoresData)
-                break
-            elif 1 <= choice <= len(scoresData):
-                playerName = list(scoresData.keys())[choice - 1]
-                print(f"\nWelcome back, {playerName}!")
-                
-                while True:
-                    print("Would you like to see your previous scores? (y/n)")
-                    viewScores = input().strip().lower()
-                    if viewScores == "y":
-                        playerProgress(playerName, scoresData)
-                        break
-                    elif viewScores == "n":
-                        print(f"\nGood luck in your next game, {playerName}!\n")
-                        break
-                    else:
-                        print("Invalid choice. Please type 'y' for yes or 'n' for no.")
-                break
-            else:
-                print(f"Invalid input. Please enter a number between 0 and {len(scoresData)}.")
-        except ValueError:
-            print(f"Invalid input. Please enter a number between 0 and {len(scoresData)}.")
+    # Print the top 10 scorers
+    print("\nTop 10 High Scorers:")
+    for i, (player, timestamp, score) in enumerate(top_scorers, 1):
+        print(f"{i}. {player} - {score} points (Achieved on: {timestamp})")
+    print("\nThank you for playing!")
 
 
-#Asks desired playerName for new players. 
-def newPlayer(scoresData, fileScores="scores.txt"):
-    playerName = input("\nEnter your desired player name: ").strip()
-    if playerName in scoresData:
-        print(f"Player {playerName} already exists.")
-    else:
-        scoresData[playerName] = {'Date Played': [], 'Score': [], 'Time Taken': []}
-        print(f"\nGlad to have you here, {playerName}! Let’s get started!\n")
-    return scoresData
-
-#Shows historical scores of player
-def playerProgress(playerName, scoresData):
-    if playerName in scoresData:
-        print(f"\nPrevious scores of {playerName}:")
-
-        dateList = scoresData[playerName].get("Date Played", [])
-        scoresList = scoresData[playerName].get("Score", [])
-        timeTakenList = scoresData[playerName].get("Time Taken", [])
-        if dateList and scoresList and timeTakenList:
-            for idx, (date, score, timeTaken) in enumerate(zip(dateList, scoresList, timeTakenList), 1):
-                print(f"Date = {date}, Score = {score}, Time Taken = {timeTaken} seconds")
-            max_score = max(scoresList)
-            max_index = scoresList.index(max_score)
-            print(f"\nYour personal highest score is {max_score}, achieved on {dateList[max_index]} in {timeTakenList[max_index]} seconds.\n")
-        else:
-            print("\nNo games played yet.")
-    
-    else:
-        print(f"\nNo data found for {playerName}. Select player name again.")
-        selectPlayer(scoresData)
 
 #creating menu for the word search game
 def menu():
@@ -466,6 +422,12 @@ def timer(timeroption):
 
 def new_game():  #merged and renamed word_search() into new_game()
     while True:  #main loop for game, handles restarting
+        
+        welcomeMessage("Welcome to Word Search!")
+        print(gameDesc())
+
+        player_name = get_player_name()
+        
         # Game start!
         clear_screen() #start with clean console
         gridsize, timeroption = menu()
@@ -518,8 +480,12 @@ def new_game():  #merged and renamed word_search() into new_game()
 
             if wordInput == "0":
                 print(f"Your final score is: {currentScore}.\n")
-                print("\nThank you for playing!\n")
-                return 
+                # Record the score at the end of the game
+                record_score(player_name, currentScore)
+
+                # Show top 10 scorers
+                display_top_scorers()
+                return
 
             if wordInput == "1":
                 print(f"Your final score is: {currentScore}.\n")
@@ -540,5 +506,4 @@ def clear_screen(): #clear console
     print("\033[3J\033[H\033[J", end="")
     sys.stdout.flush()
 
-exist()
 new_game()
