@@ -7,7 +7,7 @@ import random
 import re      
 import sys
 import time
-
+import os
 import ast
 
 #Welcome message
@@ -520,7 +520,7 @@ def new_game():  #merged and renamed word_search() into new_game()
                 time.sleep(1) # Keep the loop running without printing repeatedly
 
             # Game Interaction     
-            wordInput = input('\nEnter word (or type "0" to quit, "1" to restart): ').strip()
+            wordInput = input('\nEnter word (or type "0" to quit, "1" to restart, "2" to reshuffle): ').strip()
 
             #formatting to clear and print in the same lines
             sys.stdout.write("\033[F")  # Move cursor up one line           
@@ -546,7 +546,6 @@ def new_game():  #merged and renamed word_search() into new_game()
                 grid = reshuffle_grid(grid)  
                 print_grid(grid)  # Print the reshuffled grid
                 gridWordList = generate_word_list(valid_words, grid)  # Re-generate word list for reshuffled grid
-                print("UPDATED WORD LIST: ", gridWordList)  
                 continue  # Continue  to prompt the user for the next word input (score remains unchanged)
 
             if wordInput in foundWords:
