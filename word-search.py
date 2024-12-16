@@ -459,6 +459,21 @@ def printWordList():
     # prints all possible words to be found at game end
     return
 
+def reshuffle_grid(grid):
+    #this reshuffles the letters in the grid
+
+    # take all the letters from the grid 
+    letters = [letter for row in grid for letter in row]
+
+    # shuffle the letters
+    random.shuffle(letters)
+
+    #return the shuffled letters into the grid
+    size = len(grid)
+    reshuffled_grid = [letters[i * size:(i + 1) * size] for i in range(size)]
+
+    return reshuffled_grid
+
 def timer(timeroption):
     # Map timer options to durations (seconds)
     timer_durations = {1: 60, 2: 180, 3: 300, 4: None}
