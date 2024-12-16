@@ -376,8 +376,9 @@ def new_game():  #merged and renamed word_search() into new_game()
                     print("Time's up. Game Over!")
                     break
 
-            print(f"\rTime remaining: {remaining_time} seconds", end="", flush=True)
-            time.sleep(1)
+                print(f"\rTime remaining: {remaining_time} seconds", end="", flush=True)
+            else: # For untimed game
+                time.sleep(1) # Keep the loop running without printing repeatedly
 
             # Game Interaction     
             wordInput = input('\nEnter word (or type "0" to quit, "1" to restart): ').strip()
