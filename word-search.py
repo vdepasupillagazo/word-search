@@ -516,6 +516,11 @@ def print_grid_sequence(grid, game_duration):
     else:
         print("\nGame is untimed!")
 
+def print_word_list_sequence(msg, currentScore, gridWordList, foundWords):
+    print(f"Your final score is: {currentScore}.\n")
+    print_word_list(gridWordList, foundWords)
+    print(f"\n{msg}\n")
+
 def new_game():  #merged and renamed word_search() into new_game()
     while True:  #main loop for game, handles restarting
         # Game start!
@@ -548,7 +553,7 @@ def new_game():  #merged and renamed word_search() into new_game()
 
                 print(f"\rTime remaining: {remaining_time} seconds", end="", flush=True)
             else: # For untimed game
-                time.sleep(1) # Keep the loop running without printing repeatedly
+                pass # Do nothing to keep the loop running
 
             # Game Interaction     
             wordInput = input('\nEnter word (or type "0" to quit, "1" to restart, "2" to reshuffle): ').strip()
@@ -557,13 +562,14 @@ def new_game():  #merged and renamed word_search() into new_game()
             sys.stdout.flush() #immediate refresh
 
             if wordInput == "0":
-                print(f"Your final score is: {currentScore}.\n")
-                print("\nThank you for playing!\n")
+                msg = "Thank you for playing!"
+                print_word_list_sequence(msg, currentScore, gridWordList, foundWords)
                 return 
 
             if wordInput == "1":
-                print(f"Your final score is: {currentScore}.\n")
-                print("\nRestarting the game...")
+                msg = "Restarting the game..."
+                print_word_list_sequence(msg, currentScore, gridWordList, foundWords)
+                time.sleep(10) # allow the user to read word list before clearing terminal
                 break  # Break from current game loop to restart
 
             if wordInput == "2":  # Trigger reshuffle
