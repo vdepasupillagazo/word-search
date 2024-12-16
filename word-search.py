@@ -556,7 +556,7 @@ def new_game():  #merged and renamed word_search() into new_game()
                 pass # Do nothing to keep the loop running
 
             # Game Interaction     
-            wordInput = input('\nEnter word (or type "0" to quit, "1" to restart, "2" to reshuffle): ').strip()
+            wordInput = input('\nEnter word (or type "0" to quit, "1" to restart, "2" to reshuffle): ').strip().lower()
 
             clear_lines(3)
             sys.stdout.flush() #immediate refresh
