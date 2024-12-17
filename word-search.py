@@ -150,12 +150,10 @@ def print_grid(grid):
 def word_splitter(word):
     return re.findall(r"qu|.", word) if 'qu' in word else word
 
-def load_word_library(grid, min=3, filename= "word-list.txt"):
-    # read words from file and return as dict for use in program
-    
+# read words from file and return as dict for use in program
+def load_word_library(grid, filename, min=3):
     #transform grid as the letter_list (flatten 2d array - 1d array using comprehension)
     letter_list_ref = [letter for row in grid for letter in row]
-
     valid_word_dict = {}
 
     #max letters in a word
@@ -185,7 +183,6 @@ def load_word_library(grid, min=3, filename= "word-list.txt"):
 
                 #if the word passed inspections:
                 else:
-
                     #create a key from the first 3 letter of the word
                     key = word[:3]
 
@@ -476,7 +473,7 @@ def new_game():  # merged and renamed word_search() into new_game()
         gridsize, timeroption = menu()
         gridTemplate = create_grid(gridsize)
         grid = randomizer(gridTemplate)
-        valid_words = load_word_library(grid, filename="words_alpha.txt")
+        valid_words = load_word_library(grid, "words_alpha.txt")
         gridWordList = generate_word_list(valid_words, grid)
 
         foundWords = []
