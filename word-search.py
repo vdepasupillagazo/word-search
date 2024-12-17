@@ -523,18 +523,14 @@ def new_game():  #merged and renamed word_search() into new_game()
             clear_lines(3)
 
             if wordInput == "0":
-                print(f"Your final score is: {currentScore}.\n")
+                msg = "Thank you for playing!"
+                print_word_list_sequence(msg, currentScore, gridWordList, foundWords)
+                
                 # Record the score at the end of the game
                 record_score(player_name, currentScore)
 
                 # Show top 10 scorers
                 display_top_scorers()
-                return
-
-            if wordInput == "1":
-                print(f"Your final score is: {currentScore}.\n")  
-                msg = "Thank you for playing!"
-                print_word_list_sequence(msg, currentScore, gridWordList, foundWords)
                 return 
             elif wordInput == "1":
                 msg = "Restarting the game..."
