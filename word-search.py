@@ -40,7 +40,7 @@ def record_score(player_name, score):
     with open("scores.txt", "a") as file:
         # Write the player's name, score, and timestamp to the file
         file.write(f"{player_name} | {timestamp} | {score}\n")
-    print(f"Score for {player_name} recorded!")
+    print(f"\nScore for {player_name} recorded!")
 
 def get_top_scorers():
     top_scorers = []
@@ -466,10 +466,11 @@ def print_grid_sequence(grid, game_duration):
     else:
         print("\nGame is untimed!")
 
-def print_word_list_sequence(msg, currentScore, gridWordList, foundWords):
+def print_word_list_sequence(currentScore, gridWordList, foundWords, msg=''):
     print(f"Your final score is: {currentScore}.")
     print_word_list(gridWordList, foundWords)
-    print(f"\n{msg}\n")
+    if len(msg.strip()) > 0:
+        print(f"\n{msg}\n")
 
 def new_game():  # merged and renamed word_search() into new_game()
     welcomeMessage("Welcome to Word Search!")
@@ -478,12 +479,13 @@ def new_game():  # merged and renamed word_search() into new_game()
 
     while True:  # main loop for game, handles restarting
         clear_screen() # start with clean console
+        foundAllWords = False # set flag to False every restart
         gridsize, timeroption = menu()
         gridTemplate = create_grid(gridsize)
         grid = randomizer(gridTemplate)
         valid_words = load_word_library(grid)
         gridWordList = generate_word_list(valid_words, grid)
-        
+
         foundWords = []
         currentScore = 0
 
@@ -500,21 +502,25 @@ def new_game():  # merged and renamed word_search() into new_game()
             if game_duration:
                 elapsed_time = time.time() - start_time
                 remaining_time = game_duration - int(elapsed_time)
-                if remaining_time <= 0: # Time's up
+                if not foundAllWords and remaining_time <= 0: # Time's up
                     print("\nTime's up. Game Over!")
                     time.sleep(1) # allows user to read game over message before restarting
                     break
 
-                print(f"\rTime remaining: {remaining_time} seconds", end="", flush=True)
+                print(f"\rTime remaining: {remaining_time if not foundAllWords else '-'} seconds", end="", flush=True)
 
-            # Game Interaction     
-            wordInput = input('\nEnter word (or type "0" to quit, "1" to restart, "2" to reshuffle): ').strip().lower()
+            # Game Interaction
+            if foundAllWords:
+                print("\nCongratulations, you found all words in the grid!")
+            
+            inputMsg = 'Type "0" to quit, "1" to restart' if foundAllWords else 'Enter word (or type "0" to quit, "1" to restart, "2" to reshuffle)'
+            wordInput = input(f'\n{inputMsg}: ').strip().lower()
 
-            clear_lines(3)
+            numLines = 4 if foundAllWords else 3
+            clear_lines(numLines)
 
             if wordInput == "0":
-                msg = "Thank you for playing!"
-                print_word_list_sequence(msg, currentScore, gridWordList, foundWords)
+                print_word_list_sequence(currentScore, gridWordList, foundWords)
                 # Record the score at the end of the game
                 record_score(player_name, currentScore)
                 # Show top 10 scorers
@@ -522,10 +528,10 @@ def new_game():  # merged and renamed word_search() into new_game()
                 return 
             elif wordInput == "1":
                 msg = "Restarting the game..."
-                print_word_list_sequence(msg, currentScore, gridWordList, foundWords)
+                print_word_list_sequence(currentScore, gridWordList, foundWords, msg)
                 time.sleep(10) # allow the user to read word list before clearing terminal
                 break  # Break from current game loop to restart
-            elif wordInput == "2":  # Trigger reshuffle
+            elif wordInput == "2" and not foundAllWords:  # Trigger reshuffle
                 grid = reshuffle_grid(grid)
                 lineCount = 0
                 if (game_duration):
@@ -540,7 +546,7 @@ def new_game():  # merged and renamed word_search() into new_game()
                 print_grid_sequence(grid, game_duration) # Print the reshuffled grid
                 gridWordList = generate_word_list(valid_words, grid)  # Re-generate word list for reshuffled grid
                 continue  # Continue  to prompt the user for the next word input (score remains unchanged)
-            else:
+            elif not foundAllWords:
                 if wordInput in foundWords:
                     print("You've already found this word. Try another one!")
                 elif wordInput in gridWordList:
@@ -548,8 +554,15 @@ def new_game():  # merged and renamed word_search() into new_game()
                     score = scoreWord(wordInput)
                     currentScore += score
                     print(f"Valid word! Your current score is {currentScore}.")
+                    # handling if user found all words in the list
+                    # creates a list of words in gridWordList not yet in foundWords
+                    wordsLeft = list(set(gridWordList) - set(foundWords))
+                    if (len(wordsLeft) == 0):
+                        foundAllWords = True
                 else:
                     print("Invalid word. Try again.")
+            else:
+                continue # keep asking user to select only between 0 or 1 when user finds all words
 
 def clear_screen(): #clear console
     print("\033[3J\033[H\033[J", end="")
