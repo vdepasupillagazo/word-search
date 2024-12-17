@@ -7,8 +7,6 @@ import random
 import re      
 import sys
 import time
-import os
-import ast
 from datetime import datetime
 from collections import defaultdict
 
@@ -469,18 +467,17 @@ def print_grid_sequence(grid, game_duration):
         print("\nGame is untimed!")
 
 def print_word_list_sequence(msg, currentScore, gridWordList, foundWords):
-    print(f"Your final score is: {currentScore}.\n")
+    print(f"Your final score is: {currentScore}.")
     print_word_list(gridWordList, foundWords)
     print(f"\n{msg}\n")
 
-def new_game():  #merged and renamed word_search() into new_game()
+def new_game():  # merged and renamed word_search() into new_game()
     welcomeMessage("Welcome to Word Search!")
     print(gameDesc())
     player_name = get_player_name()
-    
-    while True:  #main loop for game, handles restarting
-        # Game start!
-        clear_screen() #start with clean console
+
+    while True:  # main loop for game, handles restarting
+        clear_screen() # start with clean console
         gridsize, timeroption = menu()
         gridTemplate = create_grid(gridsize)
         grid = randomizer(gridTemplate)
@@ -509,8 +506,6 @@ def new_game():  #merged and renamed word_search() into new_game()
                     break
 
                 print(f"\rTime remaining: {remaining_time} seconds", end="", flush=True)
-            else: # For untimed game
-                pass # Do nothing to keep the loop running
 
             # Game Interaction     
             wordInput = input('\nEnter word (or type "0" to quit, "1" to restart, "2" to reshuffle): ').strip().lower()
@@ -520,10 +515,8 @@ def new_game():  #merged and renamed word_search() into new_game()
             if wordInput == "0":
                 msg = "Thank you for playing!"
                 print_word_list_sequence(msg, currentScore, gridWordList, foundWords)
-                
                 # Record the score at the end of the game
                 record_score(player_name, currentScore)
-
                 # Show top 10 scorers
                 display_top_scorers()
                 return 
@@ -542,8 +535,7 @@ def new_game():  #merged and renamed word_search() into new_game()
 
                 clear_lines(lineCount)
                 print("\nReshuffling the grid...")
-                # allows user to read reshuffle message before reprint
-                time.sleep(1)
+                time.sleep(1) # allows user to read reshuffle message before reprint
                 clear_lines(2)
                 print_grid_sequence(grid, game_duration) # Print the reshuffled grid
                 gridWordList = generate_word_list(valid_words, grid)  # Re-generate word list for reshuffled grid
@@ -562,7 +554,6 @@ def new_game():  #merged and renamed word_search() into new_game()
 def clear_screen(): #clear console
     print("\033[3J\033[H\033[J", end="")
     sys.stdout.flush()
-
 
 def clear_lines(lineCount):
     #formatting to clear and print in the same lines
