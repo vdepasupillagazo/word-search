@@ -72,9 +72,6 @@ def display_top_scorers():
         print(f"{i}. {player} - {score} points (Achieved on: {timestamp})")
     print("\nThank you for playing!")
 
-
-
-
 #creating menu for the word search game
 def menu():
     print("CMSC 202 | Group 6 (Word Search)")
@@ -477,13 +474,11 @@ def print_word_list_sequence(msg, currentScore, gridWordList, foundWords):
     print(f"\n{msg}\n")
 
 def new_game():  #merged and renamed word_search() into new_game()
+    welcomeMessage("Welcome to Word Search!")
+    print(gameDesc())
+    player_name = get_player_name()
+    
     while True:  #main loop for game, handles restarting
-        
-        welcomeMessage("Welcome to Word Search!")
-        print(gameDesc())
-
-        player_name = get_player_name()
-        
         # Game start!
         clear_screen() #start with clean console
         gridsize, timeroption = menu()
